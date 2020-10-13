@@ -2,7 +2,7 @@ from requests import get
 import plotly.graph_objects as go
 import numpy as np
 from uk_covid19 import Cov19API
-
+import plotly.express as px
 
 def get_nation_data(area):
     england_only = [
@@ -29,6 +29,7 @@ def get_nation_data(area):
     # api = Cov19API(filters=all_nations, structure=cases_and_deaths)
 
     data = api.get_json()
+    df = api.get_dataframe()
     cumCases = []
     date = []
     newCases = []
@@ -38,18 +39,24 @@ def get_nation_data(area):
             date.append(case['date'])
             newCases.append(case['newCasesByPublishDate'])
 
-    return newCases, cumCases, date
+    return newCases, cumCases, date, df
 
 if __name__ == '__main__':
     fig = go.Figure()
     area = ['Kingston Upon Thames','Cambridge','Manchester']
     for this_area in area:
-        newCases, cumCases, date = get_nation_data(this_area)
+        newCases, cumCases, date, df = get_nation_data(this_area)
 
         x = date
         y= newCases
 
-        fig.add_trace(go.Scatter(x=date, y=newCases,
+        # fig.add_trace(px.line(df))
+        fig.add_trace(go.Scatter(x=df['date'], y=df['newCasesByPublishDate'],
                                  mode='lines',
                                  name=this_area))
+
+
+        # fig.add_trace(go.Scatter(x=date, y=newCases,
+        #                          mode='lines',
+        #                          name=this_area))
     fig.show()
