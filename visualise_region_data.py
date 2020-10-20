@@ -1,8 +1,9 @@
 from requests import get
 import plotly.graph_objects as go
-import numpy as np
+from SignalProcessing import moving_average
 from uk_covid19 import Cov19API
 import plotly.express as px
+import math
 
 def get_nation_data(area):
     england_only = [
@@ -30,6 +31,8 @@ def get_nation_data(area):
 
     data = api.get_json()
     df = api.get_dataframe()
+    df = df.drop_duplicates()
+    df = df.sort_values(by=['date'])
     cumCases = []
     date = []
     newCases = []
@@ -43,20 +46,24 @@ def get_nation_data(area):
 
 if __name__ == '__main__':
     fig = go.Figure()
-    area = ['Kingston Upon Thames','Cambridge','Manchester']
+    area = ['Kingston Upon Thames','Cambridge','Manchester', 'Liverpool']
+
     for this_area in area:
         newCases, cumCases, date, df = get_nation_data(this_area)
 
         x = date
-        y= newCases
+        y = newCases
+        N = 7
+        y_mva = moving_average(df['newCasesByPublishDate'], N)
 
-        # fig.add_trace(px.line(df))
         fig.add_trace(go.Scatter(x=df['date'], y=df['newCasesByPublishDate'],
                                  mode='lines',
                                  name=this_area))
 
+        fig.add_trace(go.Scatter(x=df['date'][(math.ceil(N/2)):], y=y_mva,
+                                 mode='lines',
+                                 name=this_area + '_7days_averaged'))
 
-        # fig.add_trace(go.Scatter(x=date, y=newCases,
-        #                          mode='lines',
-        #                          name=this_area))
+
+
     fig.show()
