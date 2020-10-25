@@ -26,8 +26,6 @@ def get_nation_data(nation):
         'areaName=' + nation
     ]
     api = Cov19API(filters=nation_filter, structure=cases_and_deaths)
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by="newCasesByPublishDate")
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths)
 
     data = api.get_json()
     cumCases = []

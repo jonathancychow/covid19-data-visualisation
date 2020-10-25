@@ -1,8 +1,6 @@
-from requests import get
 import plotly.graph_objects as go
 from SignalProcessing import moving_average
 from uk_covid19 import Cov19API
-import plotly.express as px
 import math
 
 def get_nation_data(area):
@@ -46,7 +44,13 @@ def get_nation_data(area):
 
 if __name__ == '__main__':
     fig = go.Figure()
-    area = ['Kingston Upon Thames','Cambridge','Manchester', 'Liverpool']
+    fig.update_layout(
+        title={
+            'text': "Covid Cases",
+            'xanchor': 'center'
+            })
+    area = ['Kingston Upon Thames','Richmond Upon Thames','Epsom and Ewell','Hackney and City of London']
+    # area = ['Manchester', 'Liverpool']
 
     for this_area in area:
         newCases, cumCases, date, df = get_nation_data(this_area)
@@ -63,7 +67,5 @@ if __name__ == '__main__':
         fig.add_trace(go.Scatter(x=df['date'][(math.ceil(N/2)):], y=y_mva,
                                  mode='lines',
                                  name=this_area + '_7days_averaged'))
-
-
 
     fig.show()

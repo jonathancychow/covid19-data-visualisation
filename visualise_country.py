@@ -1,6 +1,7 @@
 from requests import get
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from SignalProcessing import moving_average
 
 def get_country_data(country, status):
     endpoint = (
@@ -40,8 +41,10 @@ if __name__ == '__main__':
 
         x = date
         y= dailyCase
+        N = 7
+        y_mva = moving_average(dailyCase, N)
 
-        fig.add_trace(go.Scatter(x=date,y=dailyCase,
+        fig.add_trace(go.Scatter(x=date,y=y_mva,
                                  mode='lines',
                                  name=thisCountry),
                                  row=1, col=1)
@@ -52,8 +55,9 @@ if __name__ == '__main__':
 
         x = date
         y= dailyCase
+        y_mva = moving_average(dailyCase, N)
 
-        fig.add_trace(go.Scatter(x=date,y=dailyCase,
+        fig.add_trace(go.Scatter(x=date,y=y_mva,
                                  mode='lines',
                                  name=thisCountry),
                                  row=2, col=1)
