@@ -13,27 +13,21 @@ for this_nation in nations:
     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(this_nation)
 
     x = date
-    y = newCases
+    data = [newCases,hospitalCases, newAdmission]
 
-    fig.add_trace(go.Scatter(x=x, y=y,
-                             mode='lines',
-                             name=this_nation),
-                  row=1,
-                  col=1
+    row_count = 1
+    for this_data in data:
+
+        fig.add_trace(go.Scatter(x = x, y = this_data,
+                                mode = 'lines',
+                                name = this_nation),
+                                row=row_count,
+                                col=1
                   )
-    y = hospitalCases
-    fig.add_trace(go.Scatter(x=x, y=y,
-                             mode='lines',
-                             name=this_nation),
-                  row=2,
-                  col=1
-                  )
-    y = newAdmission
-    fig.add_trace(go.Scatter(x=x, y=y,
-                             mode='lines',
-                             name=this_nation),
-                  row=3,
-                  col=1
-                  )
+        row_count += 1
+
+
+
+
 
 fig.show()
