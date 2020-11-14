@@ -1,7 +1,7 @@
 # COVID 19 UK Cases Dashboard 
 
 ## Dashboard
-![](img/dash.jpg)
+![](img/dash.JPG)
 ## Python Library Installation 
 - Run the command prompt with admin privilege and install the Python package Poetry as follow: 
 ```bash
