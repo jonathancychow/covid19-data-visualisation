@@ -1,5 +1,5 @@
 import plotly.graph_objects as go
-from SignalProcessing import moving_average
+from src.toolbox.SignalProcessing import moving_average
 from uk_covid19 import Cov19API
 import math
 

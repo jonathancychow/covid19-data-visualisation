@@ -1,7 +1,7 @@
 from requests import get
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-from SignalProcessing import moving_average
+from src.toolbox.SignalProcessing import moving_average
 
 def get_country_data(country, status):
     endpoint = (

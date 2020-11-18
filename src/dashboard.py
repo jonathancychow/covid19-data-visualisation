@@ -1,10 +1,9 @@
 import plotly.graph_objects as go
-from SignalProcessing import moving_average
-from uk_covid19 import Cov19API
+from src.toolbox.SignalProcessing import moving_average
 import math
 from plotly.subplots import make_subplots
-from visualise_region_data import get_region_data
-from visualise_nation_data import get_nation_data
+from src.fetch.visualise_region_data import get_region_data
+from src.fetch.visualise_nation_data import get_nation_data
 
 fig = make_subplots(rows=3,
                     cols=2,
