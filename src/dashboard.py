@@ -13,7 +13,7 @@ fig = make_subplots(rows=3,
                            [{}, None]]
                     )
 
-nations = ['England', 'Wales', 'Scotland', 'Northern Ireland']
+nations = ['England']
 # Column 1
 for this_nation in nations:
     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(this_nation)
@@ -49,4 +49,5 @@ for this_area in area:
                             col = 2
                   )
 
+fig.update_layout(template = "plotly_dark", title="COVID 19 Cases Dashboard ")
 fig.show()
