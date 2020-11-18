@@ -16,9 +16,9 @@ poetry install
 ## Get Going
 - Install poetry following instruction from above, then invoke the poetry shell  
 ```bash
-poetry install 
+poetry shell 
 ``` 
 - Start the dashboard
 ```bash
-python dashboard.py
+python src\dashboard.py
 ``` 
