@@ -82,7 +82,7 @@ app.layout = html.Div([
     dcc.Graph(figure=fig)
 ])
 
-app.run_server(debug=True, use_reloader=False)  # Turn off reloader if inside Jupyter
-
+if __name__ == '__main__':
+    app.run_server(debug=True)
 
 
