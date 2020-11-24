@@ -76,6 +76,8 @@ fig.update_layout(template = "plotly_dark", title="COVID 19 Cases Dashboard ")
 
 
 app = dash.Dash()
+server = app.server
+
 app.layout = html.Div([
     dcc.Graph(figure=fig)
 ])
