@@ -5,6 +5,9 @@ from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data
 from src.fetch.visualise_nation_data import get_nation_data
 from src.fetch.visualise_country import get_country_data
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
 
 fig = make_subplots(rows=3,
                     cols=2,
@@ -69,4 +72,15 @@ for this_area in area:
                   )
 
 fig.update_layout(template = "plotly_dark", title="COVID 19 Cases Dashboard ")
-fig.show()
+# fig.show()
+
+
+app = dash.Dash()
+app.layout = html.Div([
+    dcc.Graph(figure=fig)
+])
+
+app.run_server(debug=True, use_reloader=False)  # Turn off reloader if inside Jupyter
+
+
+

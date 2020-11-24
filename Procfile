@@ -1,1 +1,1 @@
-worker: python src/dashboard.py
+web: gunicorn src/dashboard:server
