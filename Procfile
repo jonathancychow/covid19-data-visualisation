@@ -1,1 +1,1 @@
-web: python src/dashboard.py
+worker: python src/dashboard.py
