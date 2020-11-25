@@ -71,15 +71,19 @@ for this_area in area:
                             col = 2
                   )
 
-fig.update_layout(template = "plotly_dark", title="COVID 19 Cases Dashboard ")
-# fig.show()
-
+fig.update_layout(template = "plotly_white",
+                    title = {
+                        'text': "COVID 19 Cases Dashboard",
+                        'x': 0.5,
+                        'xanchor': 'center',
+                        'yanchor': 'top'}
+                  )
 
 app = dash.Dash()
 server = app.server
 
 app.layout = html.Div([
-    dcc.Graph(figure=fig)
+    dcc.Graph(figure=fig,style={'height': '90vh'})
 ])
 
 if __name__ == '__main__':
