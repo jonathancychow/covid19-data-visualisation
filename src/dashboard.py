@@ -66,7 +66,7 @@ for thisCountry in country:
                                  row=1,
                                  col=1)
 
-area = ['Kingston Upon Thames','Richmond Upon Thames','Epsom and Ewell','Hackney and City of London']
+area = ['Kingston Upon Thames','Richmond Upon Thames','Epsom and Ewell','Merton','Elmbridge']
 for this_area in area:
     newCases, cumCases, date, df = get_region_data(this_area)
 
@@ -115,7 +115,7 @@ def kingston_confirmed():
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': "Kingston Upon Thames Confirmed Cases"},
+                title={'text': "Kingston Upon Thames Confirmed Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -155,7 +155,7 @@ def uk_latest():
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': "United Kingdom Confirmed Cases"},
+                title={'text': "United Kingdom Confirmed Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
