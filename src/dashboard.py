@@ -45,7 +45,7 @@ fig1.update_layout(template="plotly_white",
 # Row 2
 fig2 = make_subplots(rows=1,
                      cols=3,
-                     subplot_titles=('Country - Confimred Cases', 'England Regional - Confirmed Cases'),
+                     subplot_titles=('Country - Confirmed Cases', 'England Regional - Confirmed Cases'),
                      specs=[[{"colspan": 2}, None, {}]]
                      )
 
