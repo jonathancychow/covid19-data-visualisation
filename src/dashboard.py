@@ -93,6 +93,7 @@ fig2.update_layout(template="plotly_white",
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
+app.title = 'COVID-19-UK'
 server = app.server
 
 dash_colors = {
