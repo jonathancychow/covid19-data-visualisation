@@ -45,36 +45,63 @@ def get_nation_data(nation):
 
     return newCases, cumCases, date, hospitalCases, newAdmission
 
+def get_uk_data_latest():
+    all_nations = [
+        "areaType=nation"
+
+    ]
+    cases_and_deaths = {
+        "date": "date",
+        "areaName": "areaName",
+        "areaCode": "areaCode",
+        "newCasesByPublishDate": "newCasesByPublishDate",
+        "cumCasesByPublishDate": "cumCasesByPublishDate",
+        "newDeathsByDeathDate": "newDeathsByDeathDate",
+        "cumDeathsByDeathDate": "cumDeathsByDeathDate",
+        "hospitalCases": "hospitalCases",
+        "newAdmissions": "newAdmissions"
+    }
+
+    api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by='newCasesByPublishDate')
+    data = api.get_json()
+    cumCases = sum([value['cumCasesByPublishDate'] for value in data['data']])
+    newCases = sum([value['newCasesByPublishDate'] for value in data['data']])
+    date = data['data'][0]['date']
+
+    return newCases, cumCases, date
+
+
 if __name__ == '__main__':
     # fig = go.Figure()
-    fig = make_subplots(rows=3, cols=1,subplot_titles=('Confirmed Cases','Hospital Cases', 'New Admission'))
-
-    nations = ['England','Wales','Scotland','Northern Ireland']
-    for this_nation in nations:
-        newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(this_nation)
-
-        x = date
-        y = newCases
-
-        fig.add_trace(go.Scatter(x=x, y=y,
-                                 mode='lines',
-                                 name=this_nation),
-                                 row=1,
-                                 col=1
-                      )
-        y = hospitalCases
-        fig.add_trace(go.Scatter(x=x, y=y,
-                                 mode='lines',
-                                 name=this_nation),
-                                 row=2,
-                                 col=1
-                      )
-        y = newAdmission
-        fig.add_trace(go.Scatter(x=x, y=y,
-                                 mode='lines',
-                                 name=this_nation),
-                      row=3,
-                      col=1
-                      )
-
-    fig.show()
+    # fig = make_subplots(rows=3, cols=1,subplot_titles=('Confirmed Cases','Hospital Cases', 'New Admission'))
+    #
+    # nations = ['England','Wales','Scotland','Northern Ireland']
+    # for this_nation in nations:
+    #     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(this_nation)
+    #
+    #     x = date
+    #     y = newCases
+    #
+    #     fig.add_trace(go.Scatter(x=x, y=y,
+    #                              mode='lines',
+    #                              name=this_nation),
+    #                              row=1,
+    #                              col=1
+    #                   )
+    #     y = hospitalCases
+    #     fig.add_trace(go.Scatter(x=x, y=y,
+    #                              mode='lines',
+    #                              name=this_nation),
+    #                              row=2,
+    #                              col=1
+    #                   )
+    #     y = newAdmission
+    #     fig.add_trace(go.Scatter(x=x, y=y,
+    #                              mode='lines',
+    #                              name=this_nation),
+    #                   row=3,
+    #                   col=1
+    #                   )
+    #
+    # fig.show()
+    print(get_uk_data_latest())

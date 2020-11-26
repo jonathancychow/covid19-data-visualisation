@@ -70,8 +70,9 @@ def get_region_data_today(area):
     cumCases = data['data'][0]['cumCasesByPublishDate']
     death = data['data'][0]['cumDeathsByDeathDate']
     newCases = data['data'][0]['newCasesByPublishDate']
+    date = data['data'][0]['date']
 
-    return newCases, cumCases, death
+    return newCases, cumCases, death, date
 
 if __name__ == '__main__':
     # fig = go.Figure()
@@ -100,5 +101,5 @@ if __name__ == '__main__':
     #                              name=this_area))
     #
     # fig.show()
-    newCases, cumCases, death = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
     print(newCases)

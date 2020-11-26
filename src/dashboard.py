@@ -3,7 +3,7 @@ from src.toolbox.SignalProcessing import moving_average
 import math
 from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
-from src.fetch.visualise_nation_data import get_nation_data
+from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
 from src.fetch.visualise_country import get_country_data
 import dash
 import dash_core_components as dcc
@@ -90,7 +90,7 @@ fig2.update_layout(template="plotly_white",
                        'xanchor': 'center',
                        'yanchor': 'top'}
                    )
-from dash.dependencies import Input, Output
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 server = app.server
@@ -105,19 +105,18 @@ dash_colors = {
 }
 
 def kingston_confirmed():
-    newCases, cumCases, death = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
 
     return {
             'data': [{'type': 'indicator',
-                    'mode': 'number+delta',
+                    'mode': 'number',
                     'value': newCases,
                     'number': {'valueformat': ',',
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
                 title={'text': "Kingston Upon Thames Confirmed Cases"},
-                font=dict(color=dash_colors['red']),
-                # paper_bgcolor=dash_colors['background'],
+                font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
                 height=200
@@ -127,17 +126,17 @@ def kingston_confirmed():
 fig3 = kingston_confirmed()
 
 def kingston_cum_case():
-    newCases, cumCases, death = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
     return {
             'data': [{'type': 'indicator',
-                    'mode': 'number+delta',
+                    'mode': 'number',
                     'value': cumCases,
                     'number': {'valueformat': ',',
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
                 title={'text': "Kingston Upon Thames Cumulative Cases"},
-                font=dict(color=dash_colors['red']),
+                font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
                 height=200
@@ -145,6 +144,26 @@ def kingston_cum_case():
             }
 
 fig4 = kingston_cum_case()
+
+def uk_latest():
+    newCases, cumCases, date = get_uk_data_latest()
+    return {
+            'data': [{'type': 'indicator',
+                      'mode': 'number',
+                      'value': newCases,
+                    'number': {'valueformat': ',',
+                              'font': {'size': 30}},
+                    'domain': {'y': [0, 1], 'x': [0, 1]}}],
+            'layout': go.Layout(
+                title={'text': "United Kingdom Confirmed Cases"},
+                font=dict(color='black'),
+                paper_bgcolor='white',
+                plot_bgcolor=dash_colors['background'],
+                height=200
+                )
+            }
+
+fig5 = uk_latest()
 
 app.layout = html.Div(
     children=[
@@ -163,7 +182,7 @@ app.layout = html.Div(
 
         ),
         html.Div(
-            dcc.Graph(figure=fig3),
+            dcc.Graph(figure=fig5),
             style={
                 'textAlign': 'center',
                 'color': dash_colors['red'],
@@ -183,6 +202,16 @@ app.layout = html.Div(
                 'display': 'inline-block'
             }
         ),
+        html.Div(
+            dcc.Graph(figure=fig3),
+            style={
+                'textAlign': 'center',
+                'color': dash_colors['red'],
+                'width': '33%',
+                'float': 'left',
+                'display': 'inline-block'
+            }
+        ),
         html.Div([
             # dcc.Graph(figure=fig2, style={'height': '45vh'})]),
             dcc.Graph(figure=fig1)],
@@ -193,7 +222,21 @@ app.layout = html.Div(
                 'float': 'center',
                 'display': 'inline-block'}
 
-        )
+        ),
+        html.Div(dcc.Markdown('''
+        &nbsp;  
+        &nbsp;  
+        Built by [Jonathan Chow](https://www.linkedin.com/in/jonathan-chow-b370b276/)  
+        Source data: [UK Gov](https://coronavirus.data.gov.uk/) and [COVID 19 API](https://covid19api.com/)  
+        Documention [here](https://github.com/jonathancychow/covid19-data-visualisation)  
+        '''),
+                 style={
+                     'textAlign': 'center',
+                     'color': dash_colors['text'],
+                     'width': '100%',
+                     'float': 'center',
+                     'display': 'inline-block'}
+                 )
 # html.Div([
 #             # dcc.Graph(figure=fig1, style={'height': '45vh'})])
 #     dcc.Graph(figure=fig1)])
