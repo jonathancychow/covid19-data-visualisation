@@ -60,7 +60,7 @@ fig2 = go.Figure()
     #                  specs=[[{"colspan": 2}, None, {}]]
     #                  )
 
-country = ['united-kingdom','spain', 'france','germany','korea-south']
+country = ['united-kingdom','spain', 'france','germany','belgium','italy']
 status='confirmed'
 
 for thisCountry in country:
