@@ -60,7 +60,7 @@ fig2 = go.Figure()
     #                  specs=[[{"colspan": 2}, None, {}]]
     #                  )
 
-country = ['united-kingdom','spain', 'france','germany','belgium','italy']
+country = ['United-Kingdom','Spain', 'France','Germany','Belgium','Italy']
 status='confirmed'
 
 for thisCountry in country:
@@ -101,15 +101,14 @@ for this_area in area:
                   )
 fig6.update_layout(template="plotly_white",
                    title={
-                       'text': "England Regional - Confirmed Cases",
+                       'text': "Surrey - Confirmed Cases",
                        'x': 0.5,
                        'xanchor': 'center',
                        'yanchor': 'top'}
                    )
 
 def kingston_confirmed():
-    newCases, cumCases, death, date = get_region_data_today('Merton')
-    # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
 
     return {
             'data': [{'type': 'indicator',
@@ -182,9 +181,7 @@ app.layout = html.Div(
                     style={
                         'textAlign': 'center',
                         'color': dash_colors['black'],
-                        # 'backgroundColor': dash_colors['background'],
                     },
-                    # className='ten columns',
                     )
         ),
 

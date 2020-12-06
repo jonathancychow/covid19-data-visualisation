@@ -3,7 +3,7 @@ from src.toolbox.SignalProcessing import moving_average
 from uk_covid19 import Cov19API
 import math
 
-def get_region_data(area,april_onward=True):
+def get_region_data(area,second_wave_onward=True):
     england_only = [
         'areaType=nation',
         'areaName=England'
@@ -31,8 +31,8 @@ def get_region_data(area,april_onward=True):
     df = api.get_dataframe()
     df = df.drop_duplicates()
     df = df.sort_values(by=['date'])
-    if april_onward:
-        df = df[(df['date'] >= '2020-04-11')]
+    if second_wave_onward:
+        df = df[(df['date'] >= '2020-08-11')]
 
     cumCases = []
     date = []
