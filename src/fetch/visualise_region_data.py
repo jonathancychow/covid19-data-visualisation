@@ -30,7 +30,8 @@ def get_region_data(area,second_wave_onward=True):
     data = api.get_json()
     df = api.get_dataframe()
     df = df.drop_duplicates()
-    df = df.sort_values(by=['date'])
+    if 'date' in df:
+        df = df.sort_values(by=['date'])
     if second_wave_onward:
         df = df[(df['date'] >= '2020-08-11')]
 
