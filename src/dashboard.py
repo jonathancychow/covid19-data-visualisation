@@ -111,10 +111,13 @@ fig6.update_layout(template="plotly_white",
                        'xanchor': 'center',
                        'yanchor': 'top'}
                    )
-
-def kingston_confirmed():
-    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
-
+@app.callback(
+    Output('graph-confirm', 'figure'),
+    [Input('graph-type', 'value')])
+def kingston_confirmed(input_graph):
+    print('confirm case - ', input_graph)
+    # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today(input_graph)
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -123,7 +126,8 @@ def kingston_confirmed():
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': "Kingston Upon Thames Confirmed Cases - " + date},
+                # title={'text': "Kingston Upon Thames Confirmed Cases - " + date},
+                title={'text': input_graph + " Confirmed Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -131,16 +135,15 @@ def kingston_confirmed():
                 )
             }
 
-fig3 = kingston_confirmed()
+# fig3 = kingston_confirmed()
 
 @app.callback(
-    Output('graph-1', 'figure'),
+    Output('graph-cum-case', 'figure'),
     [Input('graph-type', 'value')])
 def kingston_cum_case(input_graph):
     print(input_graph)
     # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
     newCases, cumCases, death, date = get_region_data_today(input_graph)
-
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -149,7 +152,8 @@ def kingston_cum_case(input_graph):
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': "Kingston Upon Thames Cumulative Cases"},
+                # title={'text': "Kingston Upon Thames Cumulative Cases"},
+                title={'text': input_graph + " Cumulative Cases"},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -158,11 +162,8 @@ def kingston_cum_case(input_graph):
             }
 
 # fig4 = kingston_cum_case()
-fig4 = kingston_confirmed()
+# fig4 = kingston_confirmed()
 
-# @app.callback(
-#     Output('graph-1', 'figure'),
-#     [Input('graph-type', 'value')])
 def uk_latest():
     newCases, cumCases, date = get_uk_data_latest()
     return {
@@ -182,7 +183,6 @@ def uk_latest():
             }
 
 fig5 = uk_latest()
-
 
 app.layout = html.Div(
     children=[
@@ -217,19 +217,7 @@ app.layout = html.Div(
 
         ),
         html.Div(
-            dcc.Graph(id='graph-1'),
-            style={
-                'textAlign': 'center',
-                'color': dash_colors['red'],
-                'width': '33%',
-                'float': 'left',
-                'display': 'inline-block'
-            }
-        ),
-
-        html.Div(
-            dcc.Graph(figure=fig4),
-
+            dcc.Graph(id='graph-cum-case'),
             style={
                 'textAlign': 'center',
                 'color': dash_colors['red'],
@@ -239,7 +227,33 @@ app.layout = html.Div(
             }
         ),
         html.Div(
-            dcc.Graph(figure=fig3),
+            children=[
+                html.Label(dcc.Graph(id='graph-confirm')),
+                html.Label(
+                    dcc.Dropdown(
+                        id='graph-type',
+                        options=[{'label': i, 'value': i}
+                                 for i in ['Kingston Upon Thames', 'Richmond Upon Thames', 'Epsom and Ewell',
+                                           'Merton', 'Elmbridge', 'Mole Valley', 'Guildford', 'Woking',
+                                           'Hammersmith and Fulham']],
+                        value='Kingston Upon Thames',
+                        style={
+                            'fontSize': 15,
+                            'width': '100%',
+                            'display': 'inline-block',
+                            'verticalAlign': "middle",
+                        },
+                    ))],
+            style={
+                'textAlign': 'center',
+                'color': dash_colors['black'],
+                'width': '33%',
+                'float': 'left',
+                'display': 'inline-block'
+            }
+        ),
+        html.Div(
+            dcc.Graph(figure=fig5),
             style={
                 'textAlign': 'center',
                 'color': dash_colors['red'],
@@ -247,26 +261,6 @@ app.layout = html.Div(
                 'float': 'left',
                 'display': 'inline-block'
             }
-        ),
-        html.Div([
-            dcc.Dropdown(
-                id='graph-type',
-                options=[{'label': i, 'value': i}
-                         for i in ['Kingston Upon Thames', 'Merton']],
-                value='Kingston Upon Thames',
-                # labelStyle={'display': 'inline-block'},
-                style={
-                    'fontSize': 15,
-                    'width' : '40%',
-                    'display' : 'inline-block',
-                    'verticalAlign' : "middle",
-                },
-
-            ),
-
-            # html.Div(id='dd-output-container')
-        ],
-# style = dict(display='flex')
         ),
         html.Div([
             dcc.Graph(figure=fig1)],
