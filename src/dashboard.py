@@ -8,6 +8,7 @@ from src.fetch.visualise_country import get_country_data
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output, State
 
 dash_colors = {
     'background': '#111111',
@@ -18,6 +19,10 @@ dash_colors = {
     'green': '#5bc246',
     'black': '#000000'
 }
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(external_stylesheets=external_stylesheets)
+app.title = 'COVID-19-UK'
+server = app.server
 
 fig1 = make_subplots(rows=1,
                     cols=3,
@@ -128,8 +133,14 @@ def kingston_confirmed():
 
 fig3 = kingston_confirmed()
 
-def kingston_cum_case():
-    newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
+@app.callback(
+    Output('graph-1', 'figure'),
+    [Input('graph-type', 'value')])
+def kingston_cum_case(input_graph):
+    print(input_graph)
+    # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
+    newCases, cumCases, death, date = get_region_data_today(input_graph)
+
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -146,8 +157,12 @@ def kingston_cum_case():
                 )
             }
 
-fig4 = kingston_cum_case()
+# fig4 = kingston_cum_case()
+fig4 = kingston_confirmed()
 
+# @app.callback(
+#     Output('graph-1', 'figure'),
+#     [Input('graph-type', 'value')])
 def uk_latest():
     newCases, cumCases, date = get_uk_data_latest()
     return {
@@ -168,10 +183,6 @@ def uk_latest():
 
 fig5 = uk_latest()
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(external_stylesheets=external_stylesheets)
-app.title = 'COVID-19-UK'
-server = app.server
 
 app.layout = html.Div(
     children=[
@@ -206,7 +217,7 @@ app.layout = html.Div(
 
         ),
         html.Div(
-            dcc.Graph(figure=fig5),
+            dcc.Graph(id='graph-1'),
             style={
                 'textAlign': 'center',
                 'color': dash_colors['red'],
@@ -218,6 +229,7 @@ app.layout = html.Div(
 
         html.Div(
             dcc.Graph(figure=fig4),
+
             style={
                 'textAlign': 'center',
                 'color': dash_colors['red'],
@@ -235,6 +247,26 @@ app.layout = html.Div(
                 'float': 'left',
                 'display': 'inline-block'
             }
+        ),
+        html.Div([
+            dcc.Dropdown(
+                id='graph-type',
+                options=[{'label': i, 'value': i}
+                         for i in ['Kingston Upon Thames', 'Merton']],
+                value='Kingston Upon Thames',
+                # labelStyle={'display': 'inline-block'},
+                style={
+                    'fontSize': 15,
+                    'width' : '40%',
+                    'display' : 'inline-block',
+                    'verticalAlign' : "middle",
+                },
+
+            ),
+
+            # html.Div(id='dd-output-container')
+        ],
+# style = dict(display='flex')
         ),
         html.Div([
             dcc.Graph(figure=fig1)],
