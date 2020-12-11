@@ -24,49 +24,76 @@ app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
 server = app.server
 
-fig1 = make_subplots(rows=1,
-                    cols=3,
-                    subplot_titles=('Confirmed Cases', 'Hospital Cases', 'New Admission')
-                    )
-
-nations = ['England']
-# Row 1
-for this_nation in nations:
-    newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(this_nation)
-
+@app.callback(
+    Output('uk-nation-graph', 'figure'),
+    [Input('regional-input', 'value')])
+def uk_nation(nation):
+    newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(nation)
     x = date
-    data = [newCases,hospitalCases, newAdmission]
+    return {
+        'data': [{'mode': 'lines',
+                  'name': 'England',
+                  'type': 'scatter',
+                  'x': x,
+                  'xaxis': 'x',
+                  'y': newCases,
+                  'yaxis': 'y'},
+                 {'mode': 'lines',
+                  'name': 'England',
+                  'type': 'scatter',
+                  'x': x,
+                  'xaxis': 'x2',
+                  'y': hospitalCases,
+                  'yaxis': 'y2'},
+                 {'mode': 'lines',
+                  'name': 'England',
+                  'type': 'scatter',
+                  'x': x,
+                  'xaxis': 'x3',
+                  'y': newAdmission,
+                  'yaxis': 'y3'}],
+        'layout': {'annotations': [{'font': {'size': 16},
+                                    'showarrow': False,
+                                    'text': 'Confirmed Cases',
+                                    'x': 0.14444444444444446,
+                                    'xanchor': 'center',
+                                    'xref': 'paper',
+                                    'y': 1.0,
+                                    'yanchor': 'bottom',
+                                    'yref': 'paper'},
+                                   {'font': {'size': 16},
+                                    'showarrow': False,
+                                    'text': 'Hospital Cases',
+                                    'x': 0.5,
+                                    'xanchor': 'center',
+                                    'xref': 'paper',
+                                    'y': 1.0,
+                                    'yanchor': 'bottom',
+                                    'yref': 'paper'},
+                                   {'font': {'size': 16},
+                                    'showarrow': False,
+                                    'text': 'New Admission',
+                                    'x': 0.8555555555555556,
+                                    'xanchor': 'center',
+                                    'xref': 'paper',
+                                    'y': 1.0,
+                                    'yanchor': 'bottom',
+                                    'yref': 'paper'}],
+                   'showlegend': False,
+                   'template': '...',
+                   'title': {'text': nation + ' Summary', 'x': 0.5, 'xanchor': 'center', 'yanchor': 'top'},
+                   'xaxis': {'anchor': 'y', 'domain': [0.0, 0.2888888888888889]},
+                   'xaxis2': {'anchor': 'y2', 'domain': [0.35555555555555557, 0.6444444444444445]},
+                   'xaxis3': {'anchor': 'y3', 'domain': [0.7111111111111111, 1.0]},
+                   'yaxis': {'anchor': 'x', 'domain': [0.0, 1.0]},
+                   'yaxis2': {'anchor': 'x2', 'domain': [0.0, 1.0]},
+                   'yaxis3': {'anchor': 'x3', 'domain': [0.0, 1.0]}}
+    }
 
-    col_count = 1
-    for this_data in data:
 
-        fig1.add_trace(go.Scatter(x = x, y = this_data,
-                                mode = 'lines',
-                                name = this_nation),
-                                row=1,
-                                col=col_count
-                  )
-        col_count += 1
-
-fig1.update_layout(template="plotly_white",
-                   showlegend=False,
-                   title={
-                       'text': "England Summary",
-                       'x': 0.5,
-                       'xanchor': 'center',
-                       'yanchor': 'top'}
-                   )
-
-# Row 2
 fig2 = go.Figure()
-    # rows=1,
-    #                  cols=3,
-    #                  subplot_titles=('Country - Confirmed Cases', 'England Regional - Confirmed Cases'),
-    #                  specs=[[{"colspan": 2}, None, {}]]
-    #                  )
-
-country = ['United-Kingdom','Spain', 'France','Germany','Italy']
-status='confirmed'
+country = ['United-Kingdom', 'Spain', 'France', 'Germany', 'Italy']
+status = 'confirmed'
 
 for thisCountry in country:
     date, cumulativeCase, dailyCase = get_country_data(thisCountry, status)
@@ -135,14 +162,10 @@ def kingston_confirmed(input_graph):
                 )
             }
 
-# fig3 = kingston_confirmed()
-
 @app.callback(
     Output('graph-cum-case', 'figure'),
     [Input('graph-type', 'value')])
 def kingston_cum_case(input_graph):
-    print(input_graph)
-    # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
     newCases, cumCases, death, date = get_region_data_today(input_graph)
     return {
             'data': [{'type': 'indicator',
@@ -152,7 +175,6 @@ def kingston_cum_case(input_graph):
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                # title={'text': "Kingston Upon Thames Cumulative Cases"},
                 title={'text': input_graph + " Cumulative Cases"},
                 font=dict(color='black'),
                 paper_bgcolor='white',
@@ -160,9 +182,6 @@ def kingston_cum_case(input_graph):
                 height=200
                 )
             }
-
-# fig4 = kingston_cum_case()
-# fig4 = kingston_confirmed()
 
 def uk_latest():
     newCases, cumCases, date = get_uk_data_latest()
@@ -234,7 +253,7 @@ app.layout = html.Div(
                         id='graph-type',
                         options=[{'label': i, 'value': i}
                                  for i in ['Kingston Upon Thames', 'Richmond Upon Thames', 'Epsom and Ewell',
-                                           'Merton', 'Elmbridge', 'Mole Valley', 'Guildford', 'Woking',
+                                           'Merton', 'Elmbridge', 'Mole Valley', 'Guildford', 'Woking', 'Gravesham',
                                            'Hammersmith and Fulham']],
                         value='Kingston Upon Thames',
                         style={
@@ -243,7 +262,8 @@ app.layout = html.Div(
                             'display': 'inline-block',
                             'verticalAlign': "middle",
                         },
-                    ))],
+                    ))
+            ],
             style={
                 'textAlign': 'center',
                 'color': dash_colors['black'],
@@ -263,7 +283,21 @@ app.layout = html.Div(
             }
         ),
         html.Div([
-            dcc.Graph(figure=fig1)],
+            html.Label(dcc.Graph(id='uk-nation-graph')),
+            html.Label(
+                dcc.Dropdown(
+                    id='regional-input',
+                    options=[{'label': i, 'value': i}
+                             for i in ['England', 'Wales', 'Scotland','Northern Ireland']],
+                    value='England',
+                    style={
+                        'fontSize': 15,
+                        'width': '33%',
+                        'display': 'inline-block',
+                        'verticalAlign': "middle",
+                    },
+                ))
+        ],
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
