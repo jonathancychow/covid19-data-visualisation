@@ -289,8 +289,8 @@ app.layout = html.Div(
                     dcc.RadioItems(
                         id='unit-conversion-borough',
                         options=[{'label': i, 'value': i}
-                                 for i in ['Absoluate', 'Per 100,000']],
-                        value='Absoluate',
+                                 for i in ['Absolute', 'Per 100,000']],
+                        value='Absolute',
                         style={
                             'fontSize': 15,
                             'width': '33%',
@@ -336,8 +336,8 @@ app.layout = html.Div(
                 dcc.RadioItems(
                     id='unit-conversion-nation',
                     options=[{'label': i, 'value': i}
-                             for i in ['Absoluate', 'Per 100,000']],
-                    value='Absoluate',
+                             for i in ['Absolute', 'Per 100,000']],
+                    value='Absolute',
                     style={
                         'fontSize': 15,
                         'width': '33%',
