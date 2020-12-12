@@ -27,10 +27,11 @@ server = app.server
 
 @app.callback(
     Output('uk-nation-graph', 'figure'),
-    [Input('regional-input', 'value')])
-def uk_nation(nation, density=1):
+    [Input('regional-input', 'value'),
+     Input('unit-conversion-nation','value')])
+def uk_nation(nation, unit):
     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(nation)
-    if density:
+    if unit == 'Per 100,000':
         newCases = case_density_conversion(newCases, nation.upper())
         hospitalCases = case_density_conversion(hospitalCases, nation.upper())
         newAdmission = case_density_conversion(newAdmission, nation.upper())
@@ -268,7 +269,8 @@ app.layout = html.Div(
                             'display': 'inline-block',
                             'verticalAlign': "middle",
                         },
-                    ))
+                    )),
+                
             ],
             style={
                 'textAlign': 'center',
@@ -296,6 +298,19 @@ app.layout = html.Div(
                     options=[{'label': i, 'value': i}
                              for i in ['England', 'Wales', 'Scotland','Northern Ireland']],
                     value='England',
+                    style={
+                        'fontSize': 15,
+                        'width': '33%',
+                        'display': 'inline-block',
+                        'verticalAlign': "middle",
+                    },
+                )),
+            html.Label(
+                dcc.RadioItems(
+                    id='unit-conversion-nation',
+                    options=[{'label': i, 'value': i}
+                             for i in ['Absoluate', 'Per 100,000']],
+                    value='Absoluate',
                     style={
                         'fontSize': 15,
                         'width': '33%',
