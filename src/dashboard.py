@@ -5,6 +5,7 @@ from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
 from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
 from src.fetch.visualise_country import get_country_data
+from src.fetch.get_population import case_density_conversion
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -27,8 +28,13 @@ server = app.server
 @app.callback(
     Output('uk-nation-graph', 'figure'),
     [Input('regional-input', 'value')])
-def uk_nation(nation):
+def uk_nation(nation, density=1):
     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(nation)
+    if density:
+        newCases = case_density_conversion(newCases, nation.upper())
+        hospitalCases = case_density_conversion(hospitalCases, nation.upper())
+        newAdmission = case_density_conversion(newAdmission, nation.upper())
+
     x = date
     return {
         'data': [{'mode': 'lines',
@@ -116,7 +122,7 @@ fig2.update_layout(template="plotly_white",
                    )
 
 fig6 = go.Figure()
-area = ['Kingston Upon Thames','Richmond Upon Thames','Epsom and Ewell','Merton','Elmbridge']
+area = ['Kingston upon Thames','Richmond upon Thames','Epsom and Ewell','Merton','Elmbridge']
 for this_area in area:
     newCases, cumCases, date, df = get_region_data(this_area)
 
@@ -252,10 +258,10 @@ app.layout = html.Div(
                     dcc.Dropdown(
                         id='graph-type',
                         options=[{'label': i, 'value': i}
-                                 for i in ['Kingston Upon Thames', 'Richmond Upon Thames', 'Epsom and Ewell',
+                                 for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
                                            'Merton', 'Elmbridge', 'Mole Valley', 'Guildford', 'Woking', 'Gravesham',
                                            'Hammersmith and Fulham']],
-                        value='Kingston Upon Thames',
+                        value='Kingston upon Thames',
                         style={
                             'fontSize': 15,
                             'width': '100%',
