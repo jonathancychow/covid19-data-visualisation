@@ -1,5 +1,6 @@
 import pandas as pd
 from pathlib import Path
+import math
 
 def population(borough):
 
@@ -28,15 +29,17 @@ def get_population_df():
 def case_density_conversion(input, borough):
     df= get_population_df()
     population = df[borough]['Estimated Population  mid-2018']
-    # [x / myInt for x in myList]
-    # print(population)
-    # print(input)
-    output=[]
-    for this_value in input:
-        if this_value == None:
-            output.append(None)
-        else:
-            output.append(this_value/population)
+
+    if type(input) == int:
+        output = math.floor(100000 * input / population)
+    else:
+        # input is list
+        output=[]
+        for this_value in input:
+            if this_value == None:
+                output.append(None)
+            else:
+                output.append(100000 * this_value/population)
     return output
 
 if __name__ == '__main__':

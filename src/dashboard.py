@@ -147,11 +147,13 @@ fig6.update_layout(template="plotly_white",
                    )
 @app.callback(
     Output('graph-confirm', 'figure'),
-    [Input('graph-type', 'value')])
-def kingston_confirmed(input_graph):
-    print('confirm case - ', input_graph)
-    # newCases, cumCases, death, date = get_region_data_today('Kingston Upon Thames')
-    newCases, cumCases, death, date = get_region_data_today(input_graph)
+    [Input('graph-type', 'value'),
+     Input('unit-conversion-borough','value')])
+def borough_confirmed(borough, unit):
+    print('confirm case - ', borough)
+    newCases, cumCases, death, date = get_region_data_today(borough)
+    if unit == 'Per 100,000':
+        newCases = case_density_conversion(newCases, borough)
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -161,7 +163,7 @@ def kingston_confirmed(input_graph):
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
                 # title={'text': "Kingston Upon Thames Confirmed Cases - " + date},
-                title={'text': input_graph + " Confirmed Cases - " + date},
+                title={'text': borough + " Confirmed Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -171,9 +173,12 @@ def kingston_confirmed(input_graph):
 
 @app.callback(
     Output('graph-cum-case', 'figure'),
-    [Input('graph-type', 'value')])
-def kingston_cum_case(input_graph):
-    newCases, cumCases, death, date = get_region_data_today(input_graph)
+    [Input('graph-type', 'value'),
+     Input('unit-conversion-borough','value')])
+def kingston_cum_case(borough, unit):
+    newCases, cumCases, death, date = get_region_data_today(borough)
+    if unit == 'Per 100,000':
+        cumCases = case_density_conversion(cumCases, borough)
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -182,7 +187,7 @@ def kingston_cum_case(input_graph):
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': input_graph + " Cumulative Cases"},
+                title={'text': borough + " Cumulative Cases"},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -270,7 +275,19 @@ app.layout = html.Div(
                             'verticalAlign': "middle",
                         },
                     )),
-                
+                html.Label(
+                    dcc.RadioItems(
+                        id='unit-conversion-borough',
+                        options=[{'label': i, 'value': i}
+                                 for i in ['Absoluate', 'Per 100,000']],
+                        value='Absoluate',
+                        style={
+                            'fontSize': 15,
+                            'width': '33%',
+                            'display': 'inline-block',
+                            'verticalAlign': "middle",
+                        },
+                    ))
             ],
             style={
                 'textAlign': 'center',
