@@ -14,8 +14,11 @@ def population(borough):
     return data[borough]['Estimated Population  mid-2018']
 
 def get_population_df():
-    excel_name = Path("fetch/ukmidyearestimates20192020ladcodes.xls")
-    # excel_name = 'ukmidyearestimates20192020ladcodes.xls'
+    # excel_name = Path("fetch/ukmidyearestimates20192020ladcodes.xls")
+    current_file_dir = Path(__file__).resolve()
+    current_dir = current_file_dir.parent
+    excel_path = Path(current_dir,'ukmidyearestimates20192020ladcodes.xls')
+    excel_name = excel_path
     #  = '../fetch/ukmidyearestimates20192020ladcodes.xls'
 
     data = pd.read_excel(open(excel_name, 'rb'),sheet_name='MYE3',index_col=1, header=4, usecols='A:D')
@@ -44,7 +47,7 @@ def case_density_conversion(input, borough):
 
 if __name__ == '__main__':
     # borough = 'Kingston upon Thames'
-    borough = 'England'
-    print(population(borough))
+    borough = 'ENGLAND'
+    # print(population(borough))
     df = get_population_df()
     print(df[borough]['Estimated Population  mid-2018'])
