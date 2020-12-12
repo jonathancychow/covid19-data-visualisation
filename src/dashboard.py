@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
 from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
 from src.fetch.visualise_country import get_country_data
-from src.fetch.get_population import case_density_conversion, get_population_df
+from src.fetch.get_population import case_density_conversion
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -24,10 +24,6 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
 server = app.server
-
-
-df= get_population_df()
-print(df)
 
 @app.callback(
     Output('uk-nation-graph', 'figure'),
