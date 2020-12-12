@@ -122,29 +122,39 @@ fig2.update_layout(template="plotly_white",
                        'yanchor': 'top'}
                    )
 
-fig6 = go.Figure()
-area = ['Kingston upon Thames','Richmond upon Thames','Epsom and Ewell','Merton','Elmbridge']
-for this_area in area:
-    newCases, cumCases, date, df = get_region_data(this_area)
 
-    x = date
-    y = newCases
-    N = 7
-    y_mva = moving_average(df['newCasesByPublishDate'], N)
+@app.callback(
+    Output('borough-graph', 'figure'),
+    [Input('graph-type', 'value'),
+     Input('unit-conversion-borough', 'value')])
+def borough_graph(borough, unit):
+    fig6 = go.Figure()
+    area = ['Kingston upon Thames','Richmond upon Thames','Epsom and Ewell','Merton','Elmbridge']
+    for this_area in area:
+        newCases, cumCases, date, df = get_region_data(this_area)
 
-    fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N/2)):], y=y_mva,
-                            mode='lines',
-                            name=this_area),
-                            # row = 1,
-                            # col = 3
-                  )
-fig6.update_layout(template="plotly_white",
-                   title={
-                       'text': "Surrey - Confirmed Cases",
-                       'x': 0.5,
-                       'xanchor': 'center',
-                       'yanchor': 'top'}
-                   )
+        x = date
+        y = newCases
+        N = 7
+        y_mva = moving_average(df['newCasesByPublishDate'], N)
+        if unit == 'Per 100,000':
+            y_mva = case_density_conversion(y_mva, this_area)
+
+        fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N/2)):], y=y_mva,
+                                mode='lines',
+                                name=this_area),
+                                # row = 1,
+                                # col = 3
+                      )
+    fig6.update_layout(template="plotly_white",
+                       title={
+                           'text': "Surrey - Confirmed Cases",
+                           'x': 0.5,
+                           'xanchor': 'center',
+                           'yanchor': 'top'}
+                       )
+    return fig6
+
 @app.callback(
     Output('graph-confirm', 'figure'),
     [Input('graph-type', 'value'),
@@ -238,7 +248,7 @@ app.layout = html.Div(
 
         ),
         html.Div([
-            dcc.Graph(figure=fig6)],
+            dcc.Graph(id='borough-graph')],
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
@@ -348,7 +358,9 @@ app.layout = html.Div(
         &nbsp;  
         &nbsp;  
         Built by [Jonathan Chow](https://www.linkedin.com/in/jonathan-chow-b370b276/)  
-        Source data: [UK Gov](https://coronavirus.data.gov.uk/) and [COVID 19 API](https://covid19api.com/)  
+        
+        Source data: [UK Gov](https://coronavirus.data.gov.uk/), [COVID 19 API](https://covid19api.com/) and [ONS](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
+        
         Documention [here](https://github.com/jonathancychow/covid19-data-visualisation)  
         '''),
                  style={
