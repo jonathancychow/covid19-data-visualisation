@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
 from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
 from src.fetch.visualise_country import get_country_data
-from src.fetch.get_population import case_density_conversion
+from src.fetch.get_population import case_density_conversion, get_population_df
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -24,6 +24,7 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
 server = app.server
+population_df = get_population_df()
 
 @app.callback(
     Output('uk-nation-graph', 'figure'),
@@ -32,9 +33,10 @@ server = app.server
 def uk_nation(nation, unit):
     newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(nation)
     if unit == 'Per 100,000':
-        newCases = case_density_conversion(newCases, nation.upper())
-        hospitalCases = case_density_conversion(hospitalCases, nation.upper())
-        newAdmission = case_density_conversion(newAdmission, nation.upper())
+        global population_df
+        newCases = case_density_conversion(newCases, nation.upper(), population_df)
+        hospitalCases = case_density_conversion(hospitalCases, nation.upper(), population_df)
+        newAdmission = case_density_conversion(newAdmission, nation.upper(), population_df)
 
     fig1 = make_subplots(rows=1,
                          cols=3,
@@ -102,7 +104,8 @@ def borough_graph(borough, unit):
         N = 7
         y_mva = moving_average(df['newCasesByPublishDate'], N)
         if unit == 'Per 100,000':
-            y_mva = case_density_conversion(y_mva, this_area)
+            global population_df
+            y_mva = case_density_conversion(y_mva, this_area, population_df)
 
         fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N / 2)):], y=y_mva,
                                   mode='lines',
@@ -125,7 +128,8 @@ def borough_confirmed(borough, unit):
     print('confirm case - ', borough)
     newCases, cumCases, death, date = get_region_data_today(borough)
     if unit == 'Per 100,000':
-        newCases = case_density_conversion(newCases, borough)
+        global population_df
+        newCases = case_density_conversion(newCases, borough, population_df)
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
@@ -149,7 +153,8 @@ def borough_confirmed(borough, unit):
 def kingston_cum_case(borough, unit):
     newCases, cumCases, death, date = get_region_data_today(borough)
     if unit == 'Per 100,000':
-        cumCases = case_density_conversion(cumCases, borough)
+        global population_df
+        cumCases = case_density_conversion(cumCases, borough, population_df)
     return {
             'data': [{'type': 'indicator',
                     'mode': 'number',
