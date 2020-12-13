@@ -9,7 +9,7 @@ from src.fetch.get_population import case_density_conversion
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output
 
 dash_colors = {
     'background': '#111111',
@@ -36,67 +36,31 @@ def uk_nation(nation, unit):
         hospitalCases = case_density_conversion(hospitalCases, nation.upper())
         newAdmission = case_density_conversion(newAdmission, nation.upper())
 
+    fig1 = make_subplots(rows=1,
+                         cols=3,
+                         subplot_titles=('Confirmed Cases', 'Hospital Cases', 'New Admission')
+                         )
     x = date
-    return {
-        'data': [{'mode': 'lines',
-                  'name': 'England',
-                  'type': 'scatter',
-                  'x': x,
-                  'xaxis': 'x',
-                  'y': newCases,
-                  'yaxis': 'y'},
-                 {'mode': 'lines',
-                  'name': 'England',
-                  'type': 'scatter',
-                  'x': x,
-                  'xaxis': 'x2',
-                  'y': hospitalCases,
-                  'yaxis': 'y2'},
-                 {'mode': 'lines',
-                  'name': 'England',
-                  'type': 'scatter',
-                  'x': x,
-                  'xaxis': 'x3',
-                  'y': newAdmission,
-                  'yaxis': 'y3'}],
-        'layout': {'annotations': [{'font': {'size': 16},
-                                    'showarrow': False,
-                                    'text': 'Confirmed Cases',
-                                    'x': 0.14444444444444446,
-                                    'xanchor': 'center',
-                                    'xref': 'paper',
-                                    'y': 1.0,
-                                    'yanchor': 'bottom',
-                                    'yref': 'paper'},
-                                   {'font': {'size': 16},
-                                    'showarrow': False,
-                                    'text': 'Hospital Cases',
-                                    'x': 0.5,
-                                    'xanchor': 'center',
-                                    'xref': 'paper',
-                                    'y': 1.0,
-                                    'yanchor': 'bottom',
-                                    'yref': 'paper'},
-                                   {'font': {'size': 16},
-                                    'showarrow': False,
-                                    'text': 'New Admission',
-                                    'x': 0.8555555555555556,
-                                    'xanchor': 'center',
-                                    'xref': 'paper',
-                                    'y': 1.0,
-                                    'yanchor': 'bottom',
-                                    'yref': 'paper'}],
-                   'showlegend': False,
-                   'template': '...',
-                   'title': {'text': nation + ' Summary', 'x': 0.5, 'xanchor': 'center', 'yanchor': 'top'},
-                   'xaxis': {'anchor': 'y', 'domain': [0.0, 0.2888888888888889]},
-                   'xaxis2': {'anchor': 'y2', 'domain': [0.35555555555555557, 0.6444444444444445]},
-                   'xaxis3': {'anchor': 'y3', 'domain': [0.7111111111111111, 1.0]},
-                   'yaxis': {'anchor': 'x', 'domain': [0.0, 1.0]},
-                   'yaxis2': {'anchor': 'x2', 'domain': [0.0, 1.0]},
-                   'yaxis3': {'anchor': 'x3', 'domain': [0.0, 1.0]}}
-    }
+    data = [newCases, hospitalCases, newAdmission]
 
+    col_count = 1
+    for this_data in data:
+        fig1.add_trace(go.Scatter(x=x, y=this_data,
+                                  mode='lines',
+                                  name=nation),
+                       row=1,
+                       col=col_count
+                       )
+        col_count += 1
+    fig1.update_layout(template="plotly_white",
+                       showlegend=False,
+                       title={
+                           'text': "England Summary",
+                           'x': 0.5,
+                           'xanchor': 'center',
+                           'yanchor': 'top'}
+                       )
+    return fig1
 
 fig2 = go.Figure()
 country = ['United-Kingdom', 'Spain', 'France', 'Germany', 'Italy']
@@ -129,7 +93,7 @@ fig2.update_layout(template="plotly_white",
      Input('unit-conversion-borough', 'value')])
 def borough_graph(borough, unit):
     fig6 = go.Figure()
-    area = ['Kingston upon Thames','Richmond upon Thames','Epsom and Ewell','Merton','Elmbridge']
+    area = ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell', 'Merton', 'Elmbridge']
     for this_area in area:
         newCases, cumCases, date, df = get_region_data(this_area)
 
@@ -140,12 +104,10 @@ def borough_graph(borough, unit):
         if unit == 'Per 100,000':
             y_mva = case_density_conversion(y_mva, this_area)
 
-        fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N/2)):], y=y_mva,
-                                mode='lines',
-                                name=this_area),
-                                # row = 1,
-                                # col = 3
-                      )
+        fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N / 2)):], y=y_mva,
+                                  mode='lines',
+                                  name=this_area),
+                       )
     fig6.update_layout(template="plotly_white",
                        title={
                            'text': "Surrey - Confirmed Cases",
@@ -172,7 +134,6 @@ def borough_confirmed(borough, unit):
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                # title={'text': "Kingston Upon Thames Confirmed Cases - " + date},
                 title={'text': borough + " Confirmed Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
@@ -323,7 +284,7 @@ app.layout = html.Div(
                 dcc.Dropdown(
                     id='regional-input',
                     options=[{'label': i, 'value': i}
-                             for i in ['England', 'Wales', 'Scotland','Northern Ireland']],
+                             for i in ['England', 'Wales', 'Scotland', 'Northern Ireland']],
                     value='England',
                     style={
                         'fontSize': 15,
