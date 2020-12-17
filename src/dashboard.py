@@ -90,7 +90,7 @@ def plot_countries(unit):
                        )
     fig2.update_layout(template="plotly_white",
                        title={
-                           'text': "Europe - Confirmed Cases",
+                           'text': "Europe - Confirmed Daily Cases",
                            'x': 0.5,
                            'xanchor': 'center',
                            'yanchor': 'top'}
@@ -122,7 +122,7 @@ def borough_graph(borough, unit):
                        )
     fig6.update_layout(template="plotly_white",
                        title={
-                           'text': "Surrey - Confirmed Cases",
+                           'text': "Surrey - Confirmed Daily Cases",
                            'x': 0.5,
                            'xanchor': 'center',
                            'yanchor': 'top'}
@@ -147,7 +147,7 @@ def borough_confirmed(borough, unit):
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': borough + " Confirmed Cases - " + date},
+                title={'text': borough + " Confirmed Daily Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
@@ -190,7 +190,7 @@ def uk_latest():
                               'font': {'size': 30}},
                     'domain': {'y': [0, 1], 'x': [0, 1]}}],
             'layout': go.Layout(
-                title={'text': "United Kingdom Confirmed Cases - " + date},
+                title={'text': "United Kingdom Confirmed Daily Cases - " + date},
                 font=dict(color='black'),
                 paper_bgcolor='white',
                 plot_bgcolor=dash_colors['background'],
