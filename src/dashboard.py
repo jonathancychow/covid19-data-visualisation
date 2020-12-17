@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
 from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
 from src.fetch.visualise_country import get_country_data
-from src.fetch.get_population import case_density_conversion, get_population_df
+from src.fetch.get_population import case_density_conversion, get_borough_population_df, get_countries_population_df
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -24,7 +24,8 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
 server = app.server
-population_df = get_population_df()
+population_df = get_borough_population_df()
+countries_population_df = get_countries_population_df()
 
 @app.callback(
     Output('uk-nation-graph', 'figure'),
@@ -57,36 +58,44 @@ def uk_nation(nation, unit):
     fig1.update_layout(template="plotly_white",
                        showlegend=False,
                        title={
-                           'text': "England Summary",
+                           'text': nation + " Summary",
                            'x': 0.5,
                            'xanchor': 'center',
                            'yanchor': 'top'}
                        )
     return fig1
 
-fig2 = go.Figure()
-country = ['United-Kingdom', 'Spain', 'France', 'Germany', 'Italy']
-status = 'confirmed'
+@app.callback(
+    Output('countries-graph', 'figure'),
+     Input('unit-conversion-borough','value'))
+def plot_countries(unit):
+    fig2 = go.Figure()
+    country = ['United-Kingdom', 'Spain', 'France', 'Germany', 'Italy']
+    status = 'confirmed'
 
-for thisCountry in country:
-    date, cumulativeCase, dailyCase = get_country_data(thisCountry, status)
+    for thisCountry in country:
+        date, cumulativeCase, dailyCase = get_country_data(thisCountry, status)
+        if unit == 'Per 100,000':
+            global countries_population_df
+            dailyCase = [100000 * x / countries_population_df[thisCountry] for x in dailyCase ]
 
-    x = date
-    y= dailyCase
-    N = 7
-    y_mva = moving_average(dailyCase, N)
+        x = date
+        y= dailyCase
+        N = 7
+        y_mva = moving_average(dailyCase, N)
 
-    fig2.add_trace(go.Scatter(x=date,y=y_mva,
-                                 mode='lines',
-                                 name=thisCountry)
-                   )
-fig2.update_layout(template="plotly_white",
-                   title={
-                       'text': "Europe - Confirmed Cases",
-                       'x': 0.5,
-                       'xanchor': 'center',
-                       'yanchor': 'top'}
-                   )
+        fig2.add_trace(go.Scatter(x=date,y=y_mva,
+                                     mode='lines',
+                                     name=thisCountry)
+                       )
+    fig2.update_layout(template="plotly_white",
+                       title={
+                           'text': "Europe - Confirmed Cases",
+                           'x': 0.5,
+                           'xanchor': 'center',
+                           'yanchor': 'top'}
+                       )
+    return fig2
 
 
 @app.callback(
@@ -204,7 +213,7 @@ app.layout = html.Div(
         ),
 
         html.Div([
-            dcc.Graph(figure=fig2)],
+            dcc.Graph(id='countries-graph')],
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
@@ -325,7 +334,7 @@ app.layout = html.Div(
         &nbsp;  
         Built by [Jonathan Chow](https://www.linkedin.com/in/jonathan-chow-b370b276/)  
         
-        Source data: [UK Gov](https://coronavirus.data.gov.uk/), [COVID 19 API](https://covid19api.com/) and [ONS](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
+        Source data: [UK Gov](https://coronavirus.data.gov.uk/), [COVID 19 API](https://covid19api.com/), [Datahub](https://datahub.io/core/population#data) and [ONS](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/datasets/populationestimatesforukenglandandwalesscotlandandnorthernireland)
         
         Documention [here](https://github.com/jonathancychow/covid19-data-visualisation)  
         '''),

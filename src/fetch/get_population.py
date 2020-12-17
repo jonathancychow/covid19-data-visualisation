@@ -10,7 +10,7 @@ def population(borough):
 
     return data[borough]['Estimated Population  mid-2018']
 
-def get_population_df():
+def get_borough_population_df():
     current_file_dir = Path(__file__).resolve()
     current_dir = current_file_dir.parent
     excel_path = Path(current_dir,'ukmidyearestimates20192020ladcodes.xls')
@@ -19,6 +19,14 @@ def get_population_df():
     data = pd.read_excel(open(excel_name, 'rb'),sheet_name='MYE3',index_col=1, header=4, usecols='A:D')
     data = data.transpose()
 
+    return data
+
+def get_countries_population_df():
+    data = {'United-Kingdom': 66.65 * 1e6,
+            'Spain': 46.94 * 1e6,
+            'France': 66.99 * 1e6,
+            'Germany': 83.02 * 1e6,
+            'Italy': 60.36 * 1e6}
     return data
 
 def case_density_conversion(input, borough, df):
@@ -38,7 +46,9 @@ def case_density_conversion(input, borough, df):
 
 if __name__ == '__main__':
     # borough = 'Kingston upon Thames'
-    borough = 'ENGLAND'
+    # borough = 'ENGLAND'
     # print(population(borough))
-    df = get_population_df()
-    print(df[borough]['Estimated Population  mid-2018'])
+    # df = get_population_df()
+    # print(df[borough]['Estimated Population  mid-2018'])
+    a = get_countries_population_df()
+    print(a['Italy'])
