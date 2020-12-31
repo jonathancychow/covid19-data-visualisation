@@ -20,6 +20,9 @@ dash_colors = {
     'green': '#5bc246',
     'black': '#000000'
 }
+
+borough_list = ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell', 'Merton']
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
@@ -104,7 +107,13 @@ def plot_countries(unit):
      Input('unit-conversion-borough', 'value')])
 def borough_graph(borough, unit):
     fig6 = go.Figure()
-    area = ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell', 'Merton', 'Elmbridge']
+
+    global borough_list
+    if borough not in borough_list:
+        borough_list.append(borough)
+
+    area = borough_list
+
     for this_area in area:
         newCases, cumCases, date, df = get_region_data(this_area)
 
@@ -250,7 +259,9 @@ app.layout = html.Div(
                         id='graph-type',
                         options=[{'label': i, 'value': i}
                                  for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
-                                           'Merton', 'Elmbridge', 'Mole Valley', 'Guildford', 'Woking', 'Gravesham',
+                                           'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
+                                            'Mole Valley', 'Guildford',
+                                           'Reigate and Banstead','Woking', 'Gravesham',
                                            'Hammersmith and Fulham']],
                         value='Kingston upon Thames',
                         style={
