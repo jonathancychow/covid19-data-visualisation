@@ -163,11 +163,13 @@ def vaccinated_graph():
                        )
     fig7.update_layout(template="plotly_white",
                        title={
-                           'text': "UK - People vaccinated",
+                           'text': "UK - Daily People Vaccinated",
                            'x': 0.5,
                            'xanchor': 'center',
                            'yanchor': 'top'}
                        )
+    fig7.update_xaxes(
+        tickformat="%b %d")
     return fig7
 
 fig7 = vaccinated_graph()
@@ -260,7 +262,7 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
-                'width': '35%',
+                'width': '40%',
                 'float': 'center',
                 'display': 'inline-block'}
 
@@ -270,7 +272,7 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
-                'width': '35%',
+                'width': '40%',
                 'float': 'center',
                 'display': 'inline-block'}
 
@@ -280,7 +282,7 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
-                'width': '30%',
+                'width': '20%',
                 'float': 'center',
                 'display': 'inline-block'}
 
