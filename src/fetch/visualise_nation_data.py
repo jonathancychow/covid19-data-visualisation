@@ -22,7 +22,8 @@ def get_nation_data(nation):
         "newDeathsByDeathDate": "newDeathsByDeathDate",
         "cumDeathsByDeathDate": "cumDeathsByDeathDate",
         "hospitalCases": "hospitalCases",
-        "newAdmissions": "newAdmissions"
+        "newAdmissions": "newAdmissions",
+        "cumPeopleVaccinatedFirstDoseByVaccinationDate": "cumPeopleVaccinatedFirstDoseByVaccinationDate"
     }
     nation_filter = [
         'areaType=nation',
@@ -36,14 +37,16 @@ def get_nation_data(nation):
     newCases = []
     hospitalCases = []
     newAdmission = []
+    vaccinated=[]
     for case in data['data']:
         cumCases.append(case['cumCasesByPublishDate'])
         date.append(case['date'])
         newCases.append(case['newCasesByPublishDate'])
         hospitalCases.append((case['hospitalCases']))
         newAdmission.append(case['newAdmissions'])
+        vaccinated.append(case["cumPeopleVaccinatedFirstDoseByVaccinationDate"])
 
-    return newCases, cumCases, date, hospitalCases, newAdmission
+    return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated
 
 def get_uk_data_latest():
     all_nations = [
@@ -59,7 +62,8 @@ def get_uk_data_latest():
         "newDeathsByDeathDate": "newDeathsByDeathDate",
         "cumDeathsByDeathDate": "cumDeathsByDeathDate",
         "hospitalCases": "hospitalCases",
-        "newAdmissions": "newAdmissions"
+        "newAdmissions": "newAdmissions",
+        "cumPeopleVaccinatedFirstDoseByVaccinationDate": "cumPeopleVaccinatedFirstDoseByVaccinationDate"
     }
 
     api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by='newCasesByPublishDate')
@@ -70,6 +74,30 @@ def get_uk_data_latest():
 
     return newCases, cumCases, date
 
+def get_uk_vaccinated():
+    all_nations = [
+        "areaType=overview"
+    ]
+    cases_and_deaths = {
+        "date": "date",
+        "areaName": "areaName",
+        "areaCode": "areaCode",
+        "newPeopleVaccinatedFirstDoseByPublishDate":"newPeopleVaccinatedFirstDoseByPublishDate"
+    }
+
+    api = Cov19API(filters=all_nations, structure=cases_and_deaths)
+    data = api.get_json()
+    date = []
+    vaccinated = []
+    for this_date in data['data']:
+        vaccinated.append(this_date['newPeopleVaccinatedFirstDoseByPublishDate'])
+        date.append(this_date['date'])
+
+    # cumCases = sum([value['cumCasesByPublishDate'] for value in data['data']])
+    # newCases = sum([value['newCasesByPublishDate'] for value in data['data']])
+    # date = data['data'][0]['date']
+
+    return vaccinated, date
 
 if __name__ == '__main__':
     # fig = go.Figure()
@@ -104,4 +132,6 @@ if __name__ == '__main__':
     #                   )
     #
     # fig.show()
-    print(get_uk_data_latest())
+    # print(get_uk_data_latest())
+    print(get_nation_data('England'))
+    # print(get_uk_vaccine())

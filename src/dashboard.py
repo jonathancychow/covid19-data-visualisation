@@ -3,7 +3,7 @@ from src.toolbox.SignalProcessing import moving_average
 import math
 from plotly.subplots import make_subplots
 from src.fetch.visualise_region_data import get_region_data, get_region_data_today
-from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest
+from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest, get_uk_vaccinated
 from src.fetch.visualise_country import get_country_data
 from src.fetch.get_population import case_density_conversion, get_borough_population_df, get_countries_population_df
 import dash
@@ -35,24 +35,30 @@ countries_population_df = get_countries_population_df()
     [Input('regional-input', 'value'),
      Input('unit-conversion-nation','value')])
 def uk_nation(nation, unit):
-    newCases, cumCases, date, hospitalCases, newAdmission = get_nation_data(nation)
+    newCases, cumCases, date, hospitalCases, newAdmission, vaccinated = get_nation_data(nation)
     if unit == 'Per 100,000':
         global population_df
         newCases = case_density_conversion(newCases, nation.upper(), population_df)
         hospitalCases = case_density_conversion(hospitalCases, nation.upper(), population_df)
         newAdmission = case_density_conversion(newAdmission, nation.upper(), population_df)
+        vaccinated = case_density_conversion(vaccinated, nation.upper(), population_df)
 
     fig1 = make_subplots(rows=1,
-                         cols=3,
-                         subplot_titles=('Confirmed Cases', 'Hospital Cases', 'New Admission')
+                         cols=4,
+                         subplot_titles=('Confirmed Cases', 'Hospital Cases', 'New Admission', 'Vaccinated')
                          )
     x = date
-    data = [newCases, hospitalCases, newAdmission]
+    data = [newCases, hospitalCases, newAdmission, vaccinated]
+    # print(vaccinated)
 
     col_count = 1
     for this_data in data:
+        if col_count == 4:
+            mode = 'lines+markers'
+        else:
+            mode = 'lines'
         fig1.add_trace(go.Scatter(x=x, y=this_data,
-                                  mode='lines',
+                                  mode=mode,
                                   name=nation),
                        row=1,
                        col=col_count
@@ -137,6 +143,34 @@ def borough_graph(borough, unit):
                            'yanchor': 'top'}
                        )
     return fig6
+
+def vaccinated_graph():
+    fig7 = go.Figure()
+
+    vaccinated, date = get_uk_vaccinated()
+
+    x = date
+    y = vaccinated
+        # N = 7
+        # y_mva = moving_average(df['newCasesByPublishDate'], N)
+        # if unit == 'Per 100,000':
+        #     global population_df
+        #     y_mva = case_density_conversion(y_mva, this_area, population_df)
+
+    fig7.add_trace(go.Scatter(x=date, y=y,
+                                  mode='lines',
+                                  ),
+                       )
+    fig7.update_layout(template="plotly_white",
+                       title={
+                           'text': "UK - People vaccinated",
+                           'x': 0.5,
+                           'xanchor': 'center',
+                           'yanchor': 'top'}
+                       )
+    return fig7
+
+fig7 = vaccinated_graph()
 
 @app.callback(
     Output('graph-confirm', 'figure'),
@@ -226,7 +260,7 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
-                'width': '50%',
+                'width': '35%',
                 'float': 'center',
                 'display': 'inline-block'}
 
@@ -236,7 +270,17 @@ app.layout = html.Div(
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
-                'width': '50%',
+                'width': '35%',
+                'float': 'center',
+                'display': 'inline-block'}
+
+        ),
+        html.Div([
+            dcc.Graph(figure=fig7)],
+            style={
+                'textAlign': 'center',
+                'color': dash_colors['text'],
+                'width': '30%',
                 'float': 'center',
                 'display': 'inline-block'}
 

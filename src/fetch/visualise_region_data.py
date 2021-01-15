@@ -18,7 +18,8 @@ def get_region_data(area,second_wave_onward=True):
         "newCasesByPublishDate": "newCasesByPublishDate",
         "cumCasesByPublishDate": "cumCasesByPublishDate",
         "newDeathsByDeathDate": "newDeathsByDeathDate",
-        "cumDeathsByDeathDate": "cumDeathsByDeathDate"
+        "cumDeathsByDeathDate": "cumDeathsByDeathDate",
+        "cumPeopleVaccinatedFirstDoseByVaccinationDate":"cumPeopleVaccinatedFirstDoseByVaccinationDate"
     }
     area_filter = [
         'areaName='+ area + '&'

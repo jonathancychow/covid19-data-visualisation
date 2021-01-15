@@ -7,7 +7,7 @@ def get_country_data(country, status):
     endpoint = (
         'https://api.covid19api.com/dayone/country/' + country + '/status/'+ status +'/live'
     )
-    response = get(endpoint, verify=False, timeout=10)
+    response = get(endpoint, timeout=10)
 
     if response.status_code >= 400:
         raise RuntimeError(f'Request failed: {response.text}')
