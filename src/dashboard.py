@@ -35,7 +35,7 @@ countries_population_df = get_countries_population_df()
     [Input('regional-input', 'value'),
      Input('unit-conversion-nation','value')])
 def uk_nation(nation, unit):
-    newCases, cumCases, date, hospitalCases, newAdmission, vaccinated = get_nation_data(nation)
+    newCases, cumCases, date, hospitalCases, newAdmission, vaccinated, vaccinated_date = get_nation_data(nation)
     if unit == 'Per 100,000':
         global population_df
         newCases = case_density_conversion(newCases, nation.upper(), population_df)
@@ -54,7 +54,11 @@ def uk_nation(nation, unit):
     col_count = 1
     for this_data in data:
         if col_count == 4:
-            mode = 'lines+markers'
+            # mode = 'lines+markers'
+            mode = 'markers'
+            mode = 'lines'
+            x = vaccinated_date
+
         else:
             mode = 'lines'
         fig1.add_trace(go.Scatter(x=x, y=this_data,

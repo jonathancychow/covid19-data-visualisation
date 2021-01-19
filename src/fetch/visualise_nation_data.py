@@ -23,7 +23,7 @@ def get_nation_data(nation):
         "cumDeathsByDeathDate": "cumDeathsByDeathDate",
         "hospitalCases": "hospitalCases",
         "newAdmissions": "newAdmissions",
-        "cumPeopleVaccinatedFirstDoseByVaccinationDate": "cumPeopleVaccinatedFirstDoseByVaccinationDate"
+        "newPeopleVaccinatedFirstDoseByPublishDate": "newPeopleVaccinatedFirstDoseByPublishDate"
     }
     nation_filter = [
         'areaType=nation',
@@ -38,15 +38,20 @@ def get_nation_data(nation):
     hospitalCases = []
     newAdmission = []
     vaccinated=[]
+    vaccinated_date=[]
     for case in data['data']:
         cumCases.append(case['cumCasesByPublishDate'])
         date.append(case['date'])
         newCases.append(case['newCasesByPublishDate'])
         hospitalCases.append((case['hospitalCases']))
         newAdmission.append(case['newAdmissions'])
-        vaccinated.append(case["cumPeopleVaccinatedFirstDoseByVaccinationDate"])
 
-    return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated
+    for case in data['data']:
+        if case["newPeopleVaccinatedFirstDoseByPublishDate"]:
+            vaccinated.append(case["newPeopleVaccinatedFirstDoseByPublishDate"])
+            vaccinated_date.append(case['date'])
+
+    return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated, vaccinated_date
 
 def get_uk_data_latest():
     all_nations = [
@@ -134,4 +139,4 @@ if __name__ == '__main__':
     # fig.show()
     # print(get_uk_data_latest())
     print(get_nation_data('England'))
-    # print(get_uk_vaccine())
+    # print(get_uk_vaccinated())
