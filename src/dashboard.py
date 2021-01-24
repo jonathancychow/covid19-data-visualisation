@@ -7,22 +7,9 @@ from src.fetch.visualise_nation_data import get_nation_data, get_uk_data_latest,
 from src.fetch.visualise_country import get_country_data
 from src.fetch.get_population import case_density_conversion, get_borough_population_df, get_countries_population_df
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
 from dash.dependencies import Input, Output
 from src.frontend.layout.main import main_layout
-from src.frontend.plot.vaccinated import vaccinated_graph
-from src.frontend.plot.uk_latest_cases import uk_latest_graph
-
-dash_colors = {
-    'background': '#111111',
-    'text': '#BEBEBE',
-    'grid': '#333333',
-    'red': '#BF0000',
-    'blue': '#466fc2',
-    'green': '#5bc246',
-    'black': '#000000'
-}
+from src.frontend.colour.dash_colours import dash_colors
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)

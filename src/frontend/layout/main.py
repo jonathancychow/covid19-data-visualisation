@@ -2,19 +2,11 @@ import dash_html_components as html
 import dash_core_components as dcc
 from src.frontend.plot.vaccinated import vaccinated_graph
 from src.frontend.plot.uk_latest_cases import uk_latest_graph
+from src.frontend.colour.dash_colours import dash_colors
 
-dash_colors = {
-    'background': '#111111',
-    'text': '#BEBEBE',
-    'grid': '#333333',
-    'red': '#BF0000',
-    'blue': '#466fc2',
-    'green': '#5bc246',
-    'black': '#000000'
-}
 
 def main_layout():
-    main_layout= html.Div(
+    main_layout = html.Div(
         children=[
             html.Div(
 
@@ -39,21 +31,21 @@ def main_layout():
             html.Div([
                 dcc.Graph(id='borough-graph'),
                 dcc.Dropdown(
-                        id='plot-borough-case',
-                        multi=True,
-                        options=[{'label': i, 'value': i}
-                                 for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
-                                           'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
-                                           'Mole Valley', 'Guildford',
-                                           'Reigate and Banstead', 'Woking', 'Gravesham',
-                                           'Hammersmith and Fulham']],
-                        value=['Kingston upon Thames','Richmond upon Thames', 'Epsom and Ewell'],
-                        style={
-                            'fontSize': 15,
-                            'width': '100%',
-                            'display': 'inline-block',
-                            'verticalAlign': "middle",
-                        },
+                    id='plot-borough-case',
+                    multi=True,
+                    options=[{'label': i, 'value': i}
+                             for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
+                                       'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
+                                       'Mole Valley', 'Guildford',
+                                       'Reigate and Banstead', 'Woking', 'Gravesham',
+                                       'Hammersmith and Fulham']],
+                    value=['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell'],
+                    style={
+                        'fontSize': 15,
+                        'width': '100%',
+                        'display': 'inline-block',
+                        'verticalAlign': "middle",
+                    },
                 )
             ],
                 style={
@@ -93,8 +85,8 @@ def main_layout():
                             options=[{'label': i, 'value': i}
                                      for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
                                                'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
-                                                'Mole Valley', 'Guildford',
-                                               'Reigate and Banstead','Woking', 'Gravesham',
+                                               'Mole Valley', 'Guildford',
+                                               'Reigate and Banstead', 'Woking', 'Gravesham',
                                                'Hammersmith and Fulham']],
                             value='Kingston upon Thames',
                             style={
