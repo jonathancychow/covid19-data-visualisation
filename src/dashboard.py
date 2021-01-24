@@ -10,6 +10,8 @@ import dash
 from dash.dependencies import Input, Output
 from src.frontend.layout.main import main_layout
 from src.frontend.colour.dash_colours import dash_colors
+from src.frontend.layout.borough_cum_case import borough_cum_case_layout
+from src.frontend.layout.borough_daily_case import borough_daily_case_layout
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
@@ -139,21 +141,7 @@ def borough_confirmed(borough, unit):
     if unit == 'Per 100,000':
         global population_df
         newCases = case_density_conversion(newCases, borough, population_df)
-    return {
-            'data': [{'type': 'indicator',
-                    'mode': 'number',
-                    'value': newCases,
-                    'number': {'valueformat': ',',
-                              'font': {'size': 30}},
-                    'domain': {'y': [0, 1], 'x': [0, 1]}}],
-            'layout': go.Layout(
-                title={'text': borough + " Confirmed Daily Cases - " + date},
-                font=dict(color='black'),
-                paper_bgcolor='white',
-                plot_bgcolor=dash_colors['background'],
-                height=200
-                )
-            }
+    return borough_daily_case_layout(newCases, borough, date)
 
 @app.callback(
     Output('graph-cum-case', 'figure'),
@@ -164,21 +152,7 @@ def kingston_cum_case(borough, unit):
     if unit == 'Per 100,000':
         global population_df
         cumCases = case_density_conversion(cumCases, borough, population_df)
-    return {
-            'data': [{'type': 'indicator',
-                    'mode': 'number',
-                    'value': cumCases,
-                    'number': {'valueformat': ',',
-                              'font': {'size': 30}},
-                    'domain': {'y': [0, 1], 'x': [0, 1]}}],
-            'layout': go.Layout(
-                title={'text': borough + " Cumulative Cases"},
-                font=dict(color='black'),
-                paper_bgcolor='white',
-                plot_bgcolor=dash_colors['background'],
-                height=200
-                )
-            }
+    return borough_cum_case_layout(cumCases, borough)
 
 app.layout = main_layout()
 
