@@ -22,11 +22,27 @@ def get_borough_population_df():
     return data
 
 def get_countries_population_df():
-    data = {'United-Kingdom': 66.65 * 1e6,
-            'Spain': 46.94 * 1e6,
-            'France': 66.99 * 1e6,
-            'Germany': 83.02 * 1e6,
-            'Italy': 60.36 * 1e6}
+    data = {'United-Kingdom': 66460344,
+            'Spain': 46796540,
+            'France': 66977107,
+            'Germany': 82905782,
+            'Italy': 60421760,
+            'Belgium': 11433256,
+            'Switzerland':8513227,
+            'Luxembourg':607950,
+            'Denmark':5793636,
+            'Sweden':10175214,
+            'Norway':5311916,
+            'Poland':37974750,
+            'Ukraine':44622516,
+            'Belarus':9483499,
+            'United States': 326687501
+            }
+
+
+
+
+
     return data
 
 def case_density_conversion(input, borough, df):

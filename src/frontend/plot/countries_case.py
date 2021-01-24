@@ -1,6 +1,9 @@
 from src.toolbox.SignalProcessing import moving_average
 from src.fetch.visualise_country import get_country_data
 import plotly.graph_objects as go
+from src.fetch.get_population import  get_countries_population_df
+
+countries_population_df = get_countries_population_df()
 
 
 def countries_case_graph(country, unit):

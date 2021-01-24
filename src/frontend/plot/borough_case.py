@@ -1,8 +1,10 @@
 from src.toolbox.SignalProcessing import moving_average
 from src.fetch.visualise_region_data import get_region_data
-from src.fetch.get_population import case_density_conversion
 import math
 import plotly.graph_objects as go
+from src.fetch.get_population import case_density_conversion, get_borough_population_df, get_countries_population_df
+
+population_df = get_borough_population_df()
 
 def borough_case_graph(borough, unit):
     fig6 = go.Figure()

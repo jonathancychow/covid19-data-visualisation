@@ -19,7 +19,23 @@ def main_layout():
             ),
 
             html.Div([
-                dcc.Graph(id='countries-graph')],
+                dcc.Graph(id='countries-graph'),
+                dcc.Dropdown(
+                    id='plot-countries-case',
+                    multi=True,
+                    options=[{'label': i, 'value': i}
+                             for i in ['United-Kingdom', 'Spain', 'France', 'Belgium','Germany',
+                                       'Italy','Switzerland','Luxembourg',
+                                       'Denmark','Sweden','Norway','Poland','Ukraine','Belarus']],
+                    value=['United-Kingdom', 'Spain', 'France'],
+                    style={
+                        'fontSize': 15,
+                        'width': '100%',
+                        'display': 'inline-block',
+                        'verticalAlign': "middle",
+                    },
+                )
+            ],
                 style={
                     'textAlign': 'center',
                     'color': dash_colors['text'],
