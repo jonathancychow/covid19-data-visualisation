@@ -21,8 +21,6 @@ dash_colors = {
     'black': '#000000'
 }
 
-borough_list = ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell', 'Merton']
-
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
 app.title = 'COVID-19-UK'
@@ -49,7 +47,6 @@ def uk_nation(nation, unit):
                          )
     x = date
     data = [newCases, hospitalCases, newAdmission, vaccinated]
-    # print(vaccinated)
 
     col_count = 1
     for this_data in data:
@@ -113,16 +110,11 @@ def plot_countries(unit):
 
 @app.callback(
     Output('borough-graph', 'figure'),
-    [Input('graph-type', 'value'),
+    [Input('plot-borough-case','value'),
      Input('unit-conversion-borough', 'value')])
 def borough_graph(borough, unit):
     fig6 = go.Figure()
-
-    global borough_list
-    if borough not in borough_list:
-        borough_list.append(borough)
-
-    area = borough_list
+    area = borough
 
     for this_area in area:
         newCases, cumCases, date, df = get_region_data(this_area)
@@ -183,7 +175,6 @@ fig7 = vaccinated_graph()
     [Input('graph-type', 'value'),
      Input('unit-conversion-borough','value')])
 def borough_confirmed(borough, unit):
-    print('confirm case - ', borough)
     newCases, cumCases, death, date = get_region_data_today(borough)
     if unit == 'Per 100,000':
         global population_df
@@ -272,7 +263,25 @@ app.layout = html.Div(
 
         ),
         html.Div([
-            dcc.Graph(id='borough-graph')],
+            dcc.Graph(id='borough-graph'),
+            dcc.Dropdown(
+                    id='plot-borough-case',
+                    multi=True,
+                    options=[{'label': i, 'value': i}
+                             for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
+                                       'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
+                                       'Mole Valley', 'Guildford',
+                                       'Reigate and Banstead', 'Woking', 'Gravesham',
+                                       'Hammersmith and Fulham']],
+                    value=['Kingston upon Thames','Richmond upon Thames', 'Epsom and Ewell'],
+                    style={
+                        'fontSize': 15,
+                        'width': '100%',
+                        'display': 'inline-block',
+                        'verticalAlign': "middle",
+                    },
+            )
+        ],
             style={
                 'textAlign': 'center',
                 'color': dash_colors['text'],
@@ -320,7 +329,8 @@ app.layout = html.Div(
                             'display': 'inline-block',
                             'verticalAlign': "middle",
                         },
-                    )),
+                    )
+                ),
                 html.Label(
                     dcc.RadioItems(
                         id='unit-conversion-borough',
