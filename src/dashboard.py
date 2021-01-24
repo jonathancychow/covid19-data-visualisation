@@ -143,37 +143,6 @@ def borough_graph(borough, unit):
                        )
     return fig6
 
-
-def vaccinated_graph():
-    fig7 = go.Figure()
-
-    vaccinated, date = get_uk_vaccinated()
-
-    x = date
-    y = vaccinated
-        # N = 7
-        # y_mva = moving_average(df['newCasesByPublishDate'], N)
-        # if unit == 'Per 100,000':
-        #     global population_df
-        #     y_mva = case_density_conversion(y_mva, this_area, population_df)
-
-    fig7.add_trace(go.Scatter(x=date, y=y,
-                                  mode='lines',
-                                  ),
-                       )
-    fig7.update_layout(template="plotly_white",
-                       title={
-                           'text': "UK - Daily People Vaccinated",
-                           'x': 0.5,
-                           'xanchor': 'center',
-                           'yanchor': 'top'}
-                       )
-    fig7.update_xaxes(
-        tickformat="%b %d")
-    return fig7
-
-fig7 = vaccinated_graph()
-
 @app.callback(
     Output('graph-confirm', 'figure'),
     [Input('graph-type', 'value'),
@@ -223,26 +192,6 @@ def kingston_cum_case(borough, unit):
                 height=200
                 )
             }
-
-def uk_latest():
-    newCases, cumCases, date = get_uk_data_latest()
-    return {
-            'data': [{'type': 'indicator',
-                      'mode': 'number',
-                      'value': newCases,
-                    'number': {'valueformat': ',',
-                              'font': {'size': 30}},
-                    'domain': {'y': [0, 1], 'x': [0, 1]}}],
-            'layout': go.Layout(
-                title={'text': "United Kingdom Confirmed Daily Cases - " + date},
-                font=dict(color='black'),
-                paper_bgcolor='white',
-                plot_bgcolor=dash_colors['background'],
-                height=200
-                )
-            }
-
-fig5 = uk_latest()
 
 app.layout = main_layout()
 
