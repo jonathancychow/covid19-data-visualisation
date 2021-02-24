@@ -75,5 +75,8 @@ def borough_cum_case(borough, unit):
 
 app.layout = main_layout()
 
-if __name__ == '__main__':
+def start():
     app.run_server(debug=True)
+
+if __name__ == '__main__':
+    start()

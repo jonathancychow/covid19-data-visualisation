@@ -19,8 +19,20 @@ poetry install
 ```bash
 poetry shell 
 ``` 
-- Start the dashboard
+- Start dashboard
 ```bash
-python src\dashboard.py
+dashboard
 ``` 
+If you see the following, the dashboard is already running: 
+```bash
+Dash is running on http://127.0.0.1:8050/
+
+ * Serving Flask app "dashboard-script" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: on
+
+```
+
 By default, the dashboard will be running at localhost:8050, open a browser and visit http://localhost:8050. 
