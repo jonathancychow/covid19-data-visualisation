@@ -32,19 +32,11 @@ def get_nation_data(nation):
     api = Cov19API(filters=nation_filter, structure=cases_and_deaths)
 
     data = api.get_json()
-    cumCases = []
-    date = []
-    newCases = []
-    hospitalCases = []
-    newAdmission = []
-
-    for case in data['data']:
-        cumCases.append(case['cumCasesByPublishDate'])
-        date.append(case['date'])
-        newCases.append(case['newCasesByPublishDate'])
-        hospitalCases.append((case['hospitalCases']))
-        newAdmission.append(case['newAdmissions'])
-
+    cumCases = [x['cumCasesByPublishDate'] for x in data['data']]
+    date = [x['date'] for x in data['data']]
+    newCases = [x['newCasesByPublishDate'] for x in data['data']]
+    hospitalCases = [x['hospitalCases'] for x in data['data']]
+    newAdmission = [x['newAdmissions'] for x in data['data']]
     vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
     vaccinated_date=[x['date'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
 
@@ -90,15 +82,8 @@ def get_uk_vaccinated():
 
     api = Cov19API(filters=all_nations, structure=cases_and_deaths)
     data = api.get_json()
-    date = []
-    vaccinated = []
-    for this_date in data['data']:
-        vaccinated.append(this_date['newPeopleVaccinatedFirstDoseByPublishDate'])
-        date.append(this_date['date'])
-
-    # cumCases = sum([value['cumCasesByPublishDate'] for value in data['data']])
-    # newCases = sum([value['newCasesByPublishDate'] for value in data['data']])
-    # date = data['data'][0]['date']
+    date = [x['date'] for x in data['data']]
+    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data']]
 
     return vaccinated, date
 

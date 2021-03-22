@@ -25,8 +25,6 @@ def get_region_data(area,second_wave_onward=True):
         'areaName='+ area + '&'
     ]
     api = Cov19API(filters=area_filter, structure=cases_and_deaths)
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by="newCasesByPublishDate")
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths)
 
     data = api.get_json()
     df = api.get_dataframe()
@@ -36,14 +34,9 @@ def get_region_data(area,second_wave_onward=True):
     if second_wave_onward:
         df = df[(df['date'] >= '2020-08-11')]
 
-    cumCases = []
-    date = []
-    newCases = []
-
-    for case in data['data']:
-            cumCases.append(case['cumCasesByPublishDate'])
-            date.append(case['date'])
-            newCases.append(case['newCasesByPublishDate'])
+    cumCases = [x['cumCasesByPublishDate'] for x in data['data']]
+    date = [x['date'] for x in data['data']]
+    newCases = [x['newCasesByPublishDate'] for x in data['data']]
 
     return newCases, cumCases, date, df
 
