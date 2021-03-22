@@ -37,8 +37,7 @@ def get_nation_data(nation):
     newCases = []
     hospitalCases = []
     newAdmission = []
-    vaccinated=[]
-    vaccinated_date=[]
+
     for case in data['data']:
         cumCases.append(case['cumCasesByPublishDate'])
         date.append(case['date'])
@@ -46,10 +45,9 @@ def get_nation_data(nation):
         hospitalCases.append((case['hospitalCases']))
         newAdmission.append(case['newAdmissions'])
 
-    for case in data['data']:
-        if case["newPeopleVaccinatedFirstDoseByPublishDate"]:
-            vaccinated.append(case["newPeopleVaccinatedFirstDoseByPublishDate"])
-            vaccinated_date.append(case['date'])
+    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
+    vaccinated_date=[x['date'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
+
 
     return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated, vaccinated_date
 
