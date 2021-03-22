@@ -7,7 +7,7 @@ from src.fetch.get_population import case_density_conversion, get_borough_popula
 population_df = get_borough_population_df()
 
 def borough_case_graph(borough, unit):
-    fig6 = go.Figure()
+    fig = go.Figure()
 
     for this_area in borough:
         newCases, cumCases, date, df = get_region_data(this_area)
@@ -20,15 +20,15 @@ def borough_case_graph(borough, unit):
             global population_df
             y_mva = case_density_conversion(y_mva, this_area, population_df)
 
-        fig6.add_trace(go.Scatter(x=df['date'][(math.ceil(N / 2)):], y=y_mva,
+        fig.add_trace(go.Scatter(x=df['date'][(math.ceil(N / 2)):], y=y_mva,
                                   mode='lines',
                                   name=this_area),
                        )
-    fig6.update_layout(template="plotly_white",
+    fig.update_layout(template="plotly_white",
                        title={
                            'text': "Surrey - Confirmed Daily Cases",
                            'x': 0.5,
                            'xanchor': 'center',
                            'yanchor': 'top'}
                        )
-    return fig6
+    return fig
