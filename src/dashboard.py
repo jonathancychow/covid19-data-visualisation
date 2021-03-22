@@ -9,6 +9,7 @@ from src.frontend.layout.borough_daily_case import borough_daily_case_layout
 from src.frontend.layout.uk_nation import uk_nation_layout
 from src.frontend.plot.countries_case import countries_case_graph
 from src.frontend.plot.borough_case import borough_case_graph
+from src.toolbox.SignalProcessing import moving_average
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(external_stylesheets=external_stylesheets)
@@ -29,7 +30,11 @@ def uk_nation(nation, unit):
         hospitalCases = case_density_conversion(hospitalCases, nation.upper(), population_df)
         newAdmission = case_density_conversion(newAdmission, nation.upper(), population_df)
         vaccinated = case_density_conversion(vaccinated, nation.upper(), population_df)
-    return uk_nation_layout(nation, date, vaccinated_date, newCases, hospitalCases, newAdmission, vaccinated)
+    
+    N = 7
+    vaccinated_smooth = moving_average(vaccinated, N)
+
+    return uk_nation_layout(nation, date, vaccinated_date, newCases, hospitalCases, newAdmission, vaccinated_smooth)
 
 
 @app.callback(
