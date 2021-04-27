@@ -7,13 +7,13 @@ from datetime import date
 
 def get_region_data(area,second_wave_onward=True):
 
-    endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
-    payload = {
-        'areaType':'ltla',
-        'areaName': area,
-        'metric':['newCasesByPublishDate','cumCasesByPublishDate']
-    }
-    response = get(endpoint, params=payload, timeout=10)
+    # Can't get round request white space issue
+    endpoint=('https://api.coronavirus.data.gov.uk/v2/data?' +
+                'areaType=ltla&'
+                'areaName=' + area + 
+                '&metric=cumCasesByPublishDate&'
+                'metric=newCasesByPublishDate')
+    response = get(endpoint, timeout=10)
 
     if response.status_code >= 400:
         raise RuntimeError(f'Request failed: {response.text}')
@@ -30,6 +30,7 @@ def get_region_data(area,second_wave_onward=True):
     df = None
     date = [x['date'] for x in data['body'] if x['date'] > discard_after_date]
     newCases = [x['newCasesByPublishDate'] for x in data['body'] if x['date'] > discard_after_date]
+    newCases = [x for x in newCases if x is not None] # filter out None
 
     return newCases, cumCases, date, df
 
@@ -81,6 +82,26 @@ if __name__ == '__main__':
     #                              name=this_area))
     #
     # fig.show()
+    newCases, cumCases, date, df = get_region_data('Kingston Upon Thames')
     # newCases, cumCases, date, df = get_region_data('Elmbridge')
-    get_region_data_today('Elmbridge')
-    print(newCases)
+
+    # get_region_data_today('Elmbridge')
+    # print(newCases)
+    from src.toolbox.SignalProcessing import moving_average
+
+    fig = go.Figure()
+    x = date
+    y = newCases
+    y_mva = moving_average(newCases, 7)
+
+    fig.add_trace(go.Scatter(x=date, y=y_mva,
+                                  mode='lines',
+                                  name='a'))
+    fig.update_layout(template="plotly_white",
+                       title={
+                           'text': "Surrey - Confirmed Daily Cases",
+                           'x': 0.5,
+                           'xanchor': 'center',
+                           'yanchor': 'top'}
+                       )
+    fig.show()
