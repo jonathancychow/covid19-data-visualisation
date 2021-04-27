@@ -51,10 +51,10 @@ def main_layout():
                     multi=True,
                     options=[{'label': i, 'value': i}
                              for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
-                                       'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
+                                       'Elmbridge', 'Surrey Heath',
                                        'Mole Valley', 'Guildford',
                                        'Reigate and Banstead', 'Woking', 'Gravesham',
-                                       'Hammersmith and Fulham']],
+                                       ]],
                     value=['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell'],
                     style={
                         'fontSize': 15,
@@ -100,10 +100,10 @@ def main_layout():
                             id='graph-type',
                             options=[{'label': i, 'value': i}
                                      for i in ['Kingston upon Thames', 'Richmond upon Thames', 'Epsom and Ewell',
-                                               'Merton', 'Sutton', 'Elmbridge', 'Surrey Heath',
+                                               'Elmbridge', 'Surrey Heath',
                                                'Mole Valley', 'Guildford',
                                                'Reigate and Banstead', 'Woking', 'Gravesham',
-                                               'Hammersmith and Fulham']],
+                                               ]],
                             value='Kingston upon Thames',
                             style={
                                 'fontSize': 15,
