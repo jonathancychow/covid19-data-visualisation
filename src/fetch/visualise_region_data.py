@@ -2,41 +2,53 @@ import plotly.graph_objects as go
 from src.toolbox.SignalProcessing import moving_average
 from uk_covid19 import Cov19API
 import math
+from requests import get
+from datetime import date
 
 def get_region_data(area,second_wave_onward=True):
-    england_only = [
-        'areaType=nation',
-        'areaName=England'
-    ]
-    all_nations = [
-        "areaType=nation"
-    ]
+
     cases_and_deaths = {
         "date": "date",
         "areaName": "areaName",
-        "areaCode": "areaCode",
+        # "areaCode": "areaCode",
         "newCasesByPublishDate": "newCasesByPublishDate",
-        "cumCasesByPublishDate": "cumCasesByPublishDate",
-        "newDeathsByDeathDate": "newDeathsByDeathDate",
-        "cumDeathsByDeathDate": "cumDeathsByDeathDate",
-        "cumPeopleVaccinatedFirstDoseByVaccinationDate":"cumPeopleVaccinatedFirstDoseByVaccinationDate"
+        # "cumCasesByPublishDate": "cumCasesByPublishDate",
+        # "newDeathsByDeathDate": "newDeathsByDeathDate",
+        # "cumDeathsByDeathDate": "cumDeathsByDeathDate",
+        # "cumPeopleVaccinatedFirstDoseByVaccinationDate":"cumPeopleVaccinatedFirstDoseByVaccinationDate"
     }
-    area_filter = [
-        'areaName='+ area + '&'
-    ]
-    api = Cov19API(filters=area_filter, structure=cases_and_deaths)
 
-    data = api.get_json()
-    df = api.get_dataframe()
-    df = df.drop_duplicates()
-    if 'date' in df:
-        df = df.sort_values(by=['date'])
+
+    endpoint = ('https://api.coronavirus.data.gov.uk/v2/data?' + 
+                'areaType=ltla&'+
+                'areaName=' + area + 
+                '&metric=newCasesByPublishDate&' +
+                'metric=cumCasesByPublishDate' + 
+                # 'metric=cumCasesByPublishDate' + 
+                # 'metric=cumCasesByPublishDate' + 
+                # 'metric=cumCasesByPublishDate' + 
+                '&format=json')
+
+    # endpoint = (
+    #     'https://api.covid19api.com/dayone/country/' + country + '/status/'+ status +'/live'
+    # )
+    response = get(endpoint, timeout=10)
+
+    if response.status_code >= 400:
+        raise RuntimeError(f'Request failed: {response.text}')
+
+    data = response.json()
+
     if second_wave_onward:
-        df = df[(df['date'] >= '2020-08-11')]
+        discard_after_date = '2020-08-11' 
+    else:
+        discard_after_date = str(date.today())
 
-    cumCases = [x['cumCasesByPublishDate'] for x in data['data']]
-    date = [x['date'] for x in data['data']]
-    newCases = [x['newCasesByPublishDate'] for x in data['data']]
+
+    cumCases = None
+    df = None
+    date = [x['date'] for x in data['body'] if x['date'] > discard_after_date]
+    newCases = [x['newCasesByPublishDate'] for x in data['body'] if x['date'] > discard_after_date]
 
     return newCases, cumCases, date, df
 
@@ -99,5 +111,6 @@ if __name__ == '__main__':
     #                              name=this_area))
     #
     # fig.show()
-    newCases, cumCases, date, df = get_region_data('Elmbridge')
+    # newCases, cumCases, date, df = get_region_data('Elmbridge')
+    get_region_data_today('Elmbridge')
     print(newCases)
