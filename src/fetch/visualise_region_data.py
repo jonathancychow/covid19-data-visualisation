@@ -7,32 +7,13 @@ from datetime import date
 
 def get_region_data(area,second_wave_onward=True):
 
-    cases_and_deaths = {
-        "date": "date",
-        "areaName": "areaName",
-        # "areaCode": "areaCode",
-        "newCasesByPublishDate": "newCasesByPublishDate",
-        # "cumCasesByPublishDate": "cumCasesByPublishDate",
-        # "newDeathsByDeathDate": "newDeathsByDeathDate",
-        # "cumDeathsByDeathDate": "cumDeathsByDeathDate",
-        # "cumPeopleVaccinatedFirstDoseByVaccinationDate":"cumPeopleVaccinatedFirstDoseByVaccinationDate"
+    endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
+    payload = {
+        'areaType':'ltla',
+        'areaName': area,
+        'metric':['newCasesByPublishDate','cumCasesByPublishDate']
     }
-
-
-    endpoint = ('https://api.coronavirus.data.gov.uk/v2/data?' + 
-                'areaType=ltla&'+
-                'areaName=' + area + 
-                '&metric=newCasesByPublishDate&' +
-                'metric=cumCasesByPublishDate' + 
-                # 'metric=cumCasesByPublishDate' + 
-                # 'metric=cumCasesByPublishDate' + 
-                # 'metric=cumCasesByPublishDate' + 
-                '&format=json')
-
-    # endpoint = (
-    #     'https://api.covid19api.com/dayone/country/' + country + '/status/'+ status +'/live'
-    # )
-    response = get(endpoint, timeout=10)
+    response = get(endpoint, params=payload, timeout=10)
 
     if response.status_code >= 400:
         raise RuntimeError(f'Request failed: {response.text}')
@@ -53,34 +34,23 @@ def get_region_data(area,second_wave_onward=True):
     return newCases, cumCases, date, df
 
 def get_region_data_today(area):
-    england_only = [
-        'areaType=nation',
-        'areaName=England'
-    ]
-    all_nations = [
-        "areaType=nation"
-    ]
-    cases_and_deaths = {
-        "date": "date",
-        "areaName": "areaName",
-        "areaCode": "areaCode",
-        "newCasesByPublishDate": "newCasesByPublishDate",
-        "cumCasesByPublishDate": "cumCasesByPublishDate",
-        "newDeathsByDeathDate": "newDeathsByDeathDate",
-        "cumDeathsByDeathDate": "cumDeathsByDeathDate"
-    }
-    area_filter = [
-        'areaName='+ area + '&'
-    ]
-    api = Cov19API(filters=area_filter, structure=cases_and_deaths)
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by="newCasesByPublishDate")
-    # api = Cov19API(filters=all_nations, structure=cases_and_deaths)
 
-    data = api.get_json()
-    cumCases = data['data'][0]['cumCasesByPublishDate']
-    death = data['data'][0]['cumDeathsByDeathDate']
-    newCases = data['data'][0]['newCasesByPublishDate']
-    date = data['data'][0]['date']
+    endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
+    payload = {
+        'areaType':'ltla',
+        'areaName': area,
+        'metric':['newCasesByPublishDate','cumCasesByPublishDate','cumDeathsByDeathDate']
+    }
+    response = get(endpoint, params=payload, timeout=10)
+
+    if response.status_code >= 400:
+        raise RuntimeError(f'Request failed: {response.text}')
+
+    data = response.json()
+    cumCases = data['body'][0]['cumCasesByPublishDate']
+    death = data['body'][0]['cumDeathsByDeathDate']
+    newCases = data['body'][0]['newCasesByPublishDate']
+    date = data['body'][0]['date']
 
     return newCases, cumCases, death, date
 
