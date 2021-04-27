@@ -15,12 +15,12 @@ def borough_case_graph(borough, unit):
         x = date
         y = newCases
         N = 7
-        y_mva = moving_average(df['newCasesByPublishDate'], N)
+        y_mva = moving_average(newCases, N)
         if unit == 'Per 100,000':
             global population_df
             y_mva = case_density_conversion(y_mva, this_area, population_df)
 
-        fig.add_trace(go.Scatter(x=df['date'][(math.ceil(N / 2)):], y=y_mva,
+        fig.add_trace(go.Scatter(x=date, y=y_mva,
                                   mode='lines',
                                   name=this_area),
                        )
