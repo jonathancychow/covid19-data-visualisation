@@ -23,7 +23,8 @@ def get_nation_data(nation):
         "cumDeathsByDeathDate": "cumDeathsByDeathDate",
         "hospitalCases": "hospitalCases",
         "newAdmissions": "newAdmissions",
-        "newPeopleVaccinatedFirstDoseByPublishDate": "newPeopleVaccinatedFirstDoseByPublishDate"
+        "newPeopleVaccinatedFirstDoseByPublishDate": "newPeopleVaccinatedFirstDoseByPublishDate",
+        "newPeopleVaccinatedSecondDoseByPublishDate": "newPeopleVaccinatedSecondDoseByPublishDate"
     }
     nation_filter = [
         'areaType=nation',
@@ -37,9 +38,10 @@ def get_nation_data(nation):
     newCases = [x['newCasesByPublishDate'] for x in data['data']]
     hospitalCases = [x['hospitalCases'] for x in data['data']]
     newAdmission = [x['newAdmissions'] for x in data['data']]
-    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
+    first_dose = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
+    second_dose = [x['newPeopleVaccinatedSecondDoseByPublishDate'] for x in data['data'] if x['newPeopleVaccinatedSecondDoseByPublishDate']]
     vaccinated_date=[x['date'] for x in data['data'] if x['newPeopleVaccinatedFirstDoseByPublishDate']]
-
+    vaccinated = [sum(x) for x in zip(first_dose, second_dose)]
 
     return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated, vaccinated_date
 
@@ -66,7 +68,7 @@ def get_uk_vaccinated():
     endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
     payload = {
         'areaType':'overview',
-        'metric':['newPeopleVaccinatedFirstDoseByPublishDate']
+        'metric':['newPeopleVaccinatedFirstDoseByPublishDate', 'newPeopleVaccinatedSecondDoseByPublishDate']
     }
     response = get(endpoint, params=payload, timeout=10)
 
@@ -76,7 +78,9 @@ def get_uk_vaccinated():
     data = response.json()
     
     date = [x['date'] for x in data['body']]
-    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['body']]
+    first_dose = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['body']]
+    second_dose = [x['newPeopleVaccinatedSecondDoseByPublishDate'] for x in data['body']]
+    vaccinated = [sum(x) for x in zip(first_dose, second_dose)]
 
     return vaccinated, date
 
@@ -114,5 +118,5 @@ if __name__ == '__main__':
     #
     # fig.show()
     # print(get_uk_data_latest())
-    print(get_nation_data('Northern Ireland'))
-    # print(get_uk_vaccinated())
+    # print(get_nation_data('Northern Ireland'))
+    print(get_uk_vaccinated())
