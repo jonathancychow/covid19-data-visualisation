@@ -44,46 +44,39 @@ def get_nation_data(nation):
     return newCases, cumCases, date, hospitalCases, newAdmission, vaccinated, vaccinated_date
 
 def get_uk_data_latest():
-    all_nations = [
-        "areaType=nation"
-
-    ]
-    cases_and_deaths = {
-        "date": "date",
-        "areaName": "areaName",
-        "areaCode": "areaCode",
-        "newCasesByPublishDate": "newCasesByPublishDate",
-        "cumCasesByPublishDate": "cumCasesByPublishDate",
-        "newDeathsByDeathDate": "newDeathsByDeathDate",
-        "cumDeathsByDeathDate": "cumDeathsByDeathDate",
-        "hospitalCases": "hospitalCases",
-        "newAdmissions": "newAdmissions",
-        "cumPeopleVaccinatedFirstDoseByVaccinationDate": "cumPeopleVaccinatedFirstDoseByVaccinationDate"
+    endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
+    payload = {
+        'areaType':'overview',
+        'metric':['newCasesByPublishDate','cumCasesByPublishDate']
     }
+    response = get(endpoint, params=payload, timeout=10)
 
-    api = Cov19API(filters=all_nations, structure=cases_and_deaths, latest_by='newCasesByPublishDate')
-    data = api.get_json()
-    cumCases = sum([value['cumCasesByPublishDate'] for value in data['data']])
-    newCases = sum([value['newCasesByPublishDate'] for value in data['data']])
-    date = data['data'][0]['date']
+    if response.status_code >= 400:
+        raise RuntimeError(f'Request failed: {response.text}')
+
+    data = response.json()
+
+    cumCases = data['body'][0]['cumCasesByPublishDate']
+    newCases = data['body'][0]['newCasesByPublishDate']
+    date = data['body'][0]['date']
 
     return newCases, cumCases, date
 
 def get_uk_vaccinated():
-    all_nations = [
-        "areaType=overview"
-    ]
-    cases_and_deaths = {
-        "date": "date",
-        "areaName": "areaName",
-        "areaCode": "areaCode",
-        "newPeopleVaccinatedFirstDoseByPublishDate":"newPeopleVaccinatedFirstDoseByPublishDate"
+    endpoint = 'https://api.coronavirus.data.gov.uk/v2/data'
+    payload = {
+        'areaType':'overview',
+        'metric':['newPeopleVaccinatedFirstDoseByPublishDate']
     }
+    response = get(endpoint, params=payload, timeout=10)
 
-    api = Cov19API(filters=all_nations, structure=cases_and_deaths)
-    data = api.get_json()
-    date = [x['date'] for x in data['data']]
-    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['data']]
+    if response.status_code >= 400:
+        raise RuntimeError(f'Request failed: {response.text}')
+
+    data = response.json()
+    
+    date = [x['date'] for x in data['body']]
+    vaccinated = [x['newPeopleVaccinatedFirstDoseByPublishDate'] for x in data['body']]
 
     return vaccinated, date
 
@@ -121,5 +114,5 @@ if __name__ == '__main__':
     #
     # fig.show()
     # print(get_uk_data_latest())
-    print(get_nation_data('England'))
+    print(get_nation_data('Northern Ireland'))
     # print(get_uk_vaccinated())
